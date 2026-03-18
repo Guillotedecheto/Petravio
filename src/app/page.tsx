@@ -27,10 +27,12 @@ function useFadeIn() {
 }
 
 /* ─── SVG Icons (geometric, no images) ─── */
-const LogoIcon = () => (
-  <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-    <rect width="32" height="32" rx="4" fill="#FC4C00" />
-    <path d="M8 24V8h6c3.3 0 6 2.7 6 6s-2.7 6-6 6h-2v4H8z" fill="#fff" />
+const LogoIcon = ({ size = 36 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
+    {/* Large triangle - dark ember */}
+    <polygon points="35,10 5,85 65,85" fill="#BD3900" />
+    {/* Small triangle - light amber/peach, overlapping */}
+    <polygon points="62,40 45,85 80,85" fill="#FFA51F" opacity="0.75" />
   </svg>
 );
 
