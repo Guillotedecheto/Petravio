@@ -2,6 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+/* TeX Gyre Termes — elegant serif for brand name */
+@font-face {
+  font-family: 'TeX Gyre Termes';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/ArtifexSoftware/urw-base35-fonts@master/fonts/TeXGyreTermes-Regular.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/ArtifexSoftware/urw-base35-fonts@master/fonts/TeXGyreTermes-Regular.woff') format('woff');
+}
+@font-face {
+  font-family: 'TeX Gyre Termes';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/ArtifexSoftware/urw-base35-fonts@master/fonts/TeXGyreTermes-Bold.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/ArtifexSoftware/urw-base35-fonts@master/fonts/TeXGyreTermes-Bold.woff') format('woff');
+}
+@font-face {
+  font-family: 'TeX Gyre Termes';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/ArtifexSoftware/urw-base35-fonts@master/fonts/TeXGyreTermes-Italic.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/ArtifexSoftware/urw-base35-fonts@master/fonts/TeXGyreTermes-Italic.woff') format('woff');
+}
+
 /* Smooth scroll */
 html {
   scroll-behavior: smooth;

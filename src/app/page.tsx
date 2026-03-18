@@ -103,9 +103,12 @@ function Nav() {
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
         <a href="#" className="flex items-center gap-2">
           <LogoIcon />
-          <span className="font-sora text-xl text-white">
-            <span className="font-semibold">petra</span>
-            <span className="font-light">vio</span>
+          <span
+            className="text-xl text-white tracking-tight"
+            style={{ fontFamily: "'TeX Gyre Termes', 'Times New Roman', Georgia, serif" }}
+          >
+            <span className="font-bold">Petra</span>
+            <span className="font-normal text-flame">vio</span>
           </span>
         </a>
 
@@ -236,12 +239,15 @@ function Hero() {
 
       <div className="max-w-7xl mx-auto px-6 py-20 fade-in relative z-10">
         {/* Big logo + brand name block */}
-        <div className="flex items-center gap-5 mb-8">
-          <LogoIcon size={90} />
-          <div>
-            <span className="font-sora text-5xl sm:text-6xl text-white">
-              <span className="font-semibold">petra</span>
-              <span className="font-light">vio</span>
+        <div className="flex items-center gap-6 mb-8">
+          <LogoIcon size={100} />
+          <div className="flex flex-col">
+            <span
+              className="text-6xl sm:text-7xl md:text-8xl text-white tracking-tight"
+              style={{ fontFamily: "'TeX Gyre Termes', 'Times New Roman', Georgia, serif" }}
+            >
+              <span className="font-bold">Petra</span>
+              <span className="font-normal text-flame">vio</span>
             </span>
           </div>
         </div>
@@ -577,9 +583,14 @@ function Footer() {
         <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <LogoIcon />
-            <span className="text-white/50 text-sm">
-              Petravio — Prospection B2B pour le bâtiment
+            <span
+              className="text-white/70 text-lg tracking-tight"
+              style={{ fontFamily: "'TeX Gyre Termes', 'Times New Roman', Georgia, serif" }}
+            >
+              <span className="font-bold">Petra</span>
+              <span className="text-flame">vio</span>
             </span>
+            <span className="text-white/30 text-sm ml-2">— Prospection B2B pour le bâtiment</span>
           </div>
           <div className="flex items-center gap-6 text-sm text-white/40">
             <a href="mailto:contact@petravio.com" className="hover:text-white/70 transition-colors">
