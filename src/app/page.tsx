@@ -134,9 +134,75 @@ function Nav() {
 /* ─── 1. HERO ─── */
 function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center bg-black pt-20">
+    <section className="relative min-h-screen flex items-center bg-black pt-20 overflow-hidden">
+      {/* Subtle architectural wireframe background */}
+      <svg
+        className="absolute inset-0 w-full h-full pointer-events-none"
+        viewBox="0 0 1440 900"
+        fill="none"
+        preserveAspectRatio="xMidYMid slice"
+      >
+        {/* Grid of fine lines — blueprint feel */}
+        <defs>
+          <linearGradient id="archFade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="white" stopOpacity="0.03" />
+            <stop offset="100%" stopColor="white" stopOpacity="0" />
+          </linearGradient>
+          <linearGradient id="archFadeH" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="white" stopOpacity="0" />
+            <stop offset="40%" stopColor="white" stopOpacity="0.025" />
+            <stop offset="100%" stopColor="white" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+
+        {/* Perspective grid lines converging — architectural depth */}
+        <line x1="900" y1="200" x2="1400" y2="0" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" />
+        <line x1="900" y1="200" x2="1440" y2="100" stroke="white" strokeOpacity="0.025" strokeWidth="0.5" />
+        <line x1="900" y1="200" x2="1440" y2="250" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" />
+        <line x1="900" y1="200" x2="1440" y2="400" stroke="white" strokeOpacity="0.025" strokeWidth="0.5" />
+        <line x1="900" y1="200" x2="1300" y2="600" stroke="white" strokeOpacity="0.02" strokeWidth="0.5" />
+
+        {/* Tall building silhouette — right side */}
+        <rect x="1050" y="180" width="120" height="720" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
+        <rect x="1060" y="200" width="30" height="45" stroke="white" strokeOpacity="0.025" strokeWidth="0.5" fill="none" />
+        <rect x="1100" y="200" width="30" height="45" stroke="white" strokeOpacity="0.025" strokeWidth="0.5" fill="none" />
+        <rect x="1140" y="200" width="20" height="45" stroke="white" strokeOpacity="0.025" strokeWidth="0.5" fill="none" />
+        <rect x="1060" y="260" width="30" height="45" stroke="white" strokeOpacity="0.02" strokeWidth="0.5" fill="none" />
+        <rect x="1100" y="260" width="30" height="45" stroke="white" strokeOpacity="0.02" strokeWidth="0.5" fill="none" />
+        <rect x="1140" y="260" width="20" height="45" stroke="white" strokeOpacity="0.02" strokeWidth="0.5" fill="none" />
+        <rect x="1060" y="320" width="30" height="45" stroke="white" strokeOpacity="0.015" strokeWidth="0.5" fill="none" />
+        <rect x="1100" y="320" width="30" height="45" stroke="white" strokeOpacity="0.015" strokeWidth="0.5" fill="none" />
+        <rect x="1060" y="380" width="30" height="45" stroke="white" strokeOpacity="0.015" strokeWidth="0.5" fill="none" />
+        <rect x="1100" y="380" width="30" height="45" stroke="white" strokeOpacity="0.015" strokeWidth="0.5" fill="none" />
+
+        {/* Second shorter building */}
+        <rect x="1200" y="350" width="90" height="550" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" fill="none" />
+        <rect x="1210" y="370" width="25" height="35" stroke="white" strokeOpacity="0.02" strokeWidth="0.5" fill="none" />
+        <rect x="1245" y="370" width="25" height="35" stroke="white" strokeOpacity="0.02" strokeWidth="0.5" fill="none" />
+        <rect x="1210" y="420" width="25" height="35" stroke="white" strokeOpacity="0.015" strokeWidth="0.5" fill="none" />
+        <rect x="1245" y="420" width="25" height="35" stroke="white" strokeOpacity="0.015" strokeWidth="0.5" fill="none" />
+        <rect x="1210" y="470" width="25" height="35" stroke="white" strokeOpacity="0.015" strokeWidth="0.5" fill="none" />
+        <rect x="1245" y="470" width="25" height="35" stroke="white" strokeOpacity="0.015" strokeWidth="0.5" fill="none" />
+
+        {/* Thin tower / crane element */}
+        <line x1="1020" y1="100" x2="1020" y2="900" stroke="white" strokeOpacity="0.025" strokeWidth="0.5" />
+        <line x1="1000" y1="120" x2="1100" y2="120" stroke="white" strokeOpacity="0.02" strokeWidth="0.5" />
+        <line x1="1020" y1="120" x2="980" y2="180" stroke="white" strokeOpacity="0.02" strokeWidth="0.5" />
+
+        {/* Horizontal floor lines */}
+        <line x1="950" y1="900" x2="1440" y2="900" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" />
+        <line x1="980" y1="700" x2="1350" y2="700" stroke="white" strokeOpacity="0.015" strokeWidth="0.5" />
+        <line x1="1000" y1="500" x2="1300" y2="500" stroke="white" strokeOpacity="0.015" strokeWidth="0.5" />
+
+        {/* Subtle angular shape — bottom left, very faint */}
+        <polygon points="0,900 200,650 350,900" stroke="white" strokeOpacity="0.02" strokeWidth="0.5" fill="none" />
+        <line x1="100" y1="775" x2="275" y2="775" stroke="white" strokeOpacity="0.015" strokeWidth="0.5" />
+      </svg>
+
+      {/* Warm ambient glows */}
       <div className="absolute top-20 right-10 w-64 h-64 bg-flame/5 rounded-full blur-3xl" />
       <div className="absolute bottom-40 left-10 w-48 h-48 bg-amber/5 rounded-full blur-3xl" />
+      <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-ember/3 rounded-full blur-[120px]" />
 
       <div className="max-w-7xl mx-auto px-6 py-20 fade-in">
         <h1 className="font-sora font-semibold text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white leading-tight max-w-4xl">
