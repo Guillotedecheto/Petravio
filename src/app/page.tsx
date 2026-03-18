@@ -234,7 +234,18 @@ function Hero() {
       <div className="absolute bottom-40 left-10 w-48 h-48 bg-amber/5 rounded-full blur-3xl" />
       <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-ember/3 rounded-full blur-[120px]" />
 
-      <div className="max-w-7xl mx-auto px-6 py-20 fade-in">
+      <div className="max-w-7xl mx-auto px-6 py-20 fade-in relative z-10">
+        {/* Big logo + brand name block */}
+        <div className="flex items-center gap-5 mb-8">
+          <LogoIcon size={90} />
+          <div>
+            <span className="font-sora text-5xl sm:text-6xl text-white">
+              <span className="font-semibold">petra</span>
+              <span className="font-light">vio</span>
+            </span>
+          </div>
+        </div>
+
         <h1 className="font-sora font-semibold text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white leading-tight max-w-4xl">
           Vos prochains clients sont déjà dans la donnée.
         </h1>
@@ -255,6 +266,16 @@ function Hero() {
           >
             Voir comment ça marche
           </a>
+        </div>
+
+        {/* Slogan + descriptor */}
+        <div className="mt-14 border-t border-white/10 pt-6">
+          <p className="font-sora font-light text-lg text-white/50 italic">
+            Vos prochains chantiers commencent ici.
+          </p>
+          <p className="mt-1 font-sora text-xs tracking-[0.3em] uppercase text-white/30">
+            Real Estate Lead Generation Agency
+          </p>
         </div>
       </div>
 
