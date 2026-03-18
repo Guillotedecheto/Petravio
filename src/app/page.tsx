@@ -101,15 +101,8 @@ function Nav() {
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/5">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-        <a href="#" className="flex items-center gap-2">
-          <LogoIcon />
-          <span
-            className="text-xl text-white tracking-tight"
-            style={{ fontFamily: "'TeX Gyre Termes', 'Times New Roman', Georgia, serif" }}
-          >
-            <span className="font-bold">Petra</span>
-            <span className="font-normal text-flame">vio</span>
-          </span>
+        <a href="#" className="flex items-center">
+          <LogoIcon size={44} />
         </a>
 
         <div className="hidden md:flex items-center gap-8 text-sm text-white/70">
@@ -242,12 +235,9 @@ function Hero() {
         <div className="flex items-center gap-6 mb-8">
           <LogoIcon size={100} />
           <div className="flex flex-col">
-            <span
-              className="text-6xl sm:text-7xl md:text-8xl text-white tracking-tight"
-              style={{ fontFamily: "'TeX Gyre Termes', 'Times New Roman', Georgia, serif" }}
-            >
-              <span className="font-bold">Petra</span>
-              <span className="font-normal text-flame">vio</span>
+            <span className="font-sora text-6xl sm:text-7xl md:text-8xl text-white tracking-tight">
+              <span className="font-semibold">petra</span>
+              <span className="font-light">vio</span>
             </span>
           </div>
         </div>
@@ -577,12 +567,9 @@ function Footer() {
         <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <LogoIcon />
-            <span
-              className="text-white/70 text-lg tracking-tight"
-              style={{ fontFamily: "'TeX Gyre Termes', 'Times New Roman', Georgia, serif" }}
-            >
-              <span className="font-bold">Petra</span>
-              <span className="text-flame">vio</span>
+            <span className="font-sora text-lg text-white/70">
+              <span className="font-semibold">petra</span>
+              <span className="font-light">vio</span>
             </span>
             <span className="text-white/30 text-sm ml-2">— Prospection B2B pour le bâtiment</span>
           </div>
