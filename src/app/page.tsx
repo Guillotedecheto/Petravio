@@ -253,7 +253,7 @@ function Hero() {
         </div>
 
         <h1 className="font-sora font-semibold text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white leading-tight max-w-4xl">
-          Vos prochains clients sont déjà dans la donnée.
+          Vos prochains chantiers commencent ici.
         </h1>
         <p className="mt-6 text-lg sm:text-xl text-white/70 font-sora font-light max-w-2xl leading-relaxed">
           Petravio identifie les décideurs dans le secteur du bâtiment, les contacte en votre nom,
@@ -274,15 +274,9 @@ function Hero() {
           </a>
         </div>
 
-        {/* Slogan + descriptor */}
-        <div className="mt-14 border-t border-white/10 pt-6">
-          <p className="font-sora font-light text-lg text-white/50 italic">
-            Vos prochains chantiers commencent ici.
-          </p>
-          <p className="mt-1 font-sora text-xs tracking-[0.3em] uppercase text-white/30">
-            Real Estate Lead Generation Agency
-          </p>
-        </div>
+        <p className="mt-14 font-sora text-xs tracking-[0.3em] uppercase text-white/30">
+          Real Estate Lead Generation Agency
+        </p>
       </div>
 
       <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-b from-transparent to-dark-gray" />
