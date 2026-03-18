@@ -218,11 +218,63 @@ function Hero() {
         <line x1="970" y1="550" x2="1420" y2="550" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" strokeDasharray="8 12" />
         <line x1="970" y1="700" x2="1420" y2="700" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" strokeDasharray="8 12" />
 
-        {/* ── Bottom-left angular structure (subtle) ── */}
-        <polygon points="0,900 180,620 320,900" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
-        <polygon points="60,900 200,720 300,900" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
-        <line x1="90" y1="760" x2="260" y2="760" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" />
-        <line x1="120" y1="830" x2="240" y2="830" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" />
+        {/* ── Left side — building cluster ── */}
+        {/* Tall narrow building */}
+        <rect x="30" y="200" width="80" height="700" stroke="white" strokeOpacity="0.08" strokeWidth="0.7" fill="none" />
+        <rect x="42" y="230" width="20" height="30" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
+        <rect x="72" y="230" width="20" height="30" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
+        <rect x="42" y="275" width="20" height="30" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
+        <rect x="72" y="275" width="20" height="30" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
+        <rect x="42" y="320" width="20" height="30" stroke="white" strokeOpacity="0.045" strokeWidth="0.5" fill="none" />
+        <rect x="72" y="320" width="20" height="30" stroke="white" strokeOpacity="0.045" strokeWidth="0.5" fill="none" />
+        <rect x="42" y="365" width="20" height="30" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
+        <rect x="72" y="365" width="20" height="30" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
+        <rect x="42" y="410" width="20" height="30" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
+        <rect x="72" y="410" width="20" height="30" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
+        <rect x="42" y="455" width="20" height="30" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" fill="none" />
+        <rect x="72" y="455" width="20" height="30" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" fill="none" />
+        {/* Rooftop accent left building */}
+        <line x1="30" y1="200" x2="70" y2="175" stroke="#FC4C00" strokeOpacity="0.1" strokeWidth="0.7" />
+        <line x1="110" y1="200" x2="70" y2="175" stroke="#FC4C00" strokeOpacity="0.1" strokeWidth="0.7" />
+
+        {/* Medium building left */}
+        <rect x="140" y="380" width="100" height="520" stroke="white" strokeOpacity="0.07" strokeWidth="0.7" fill="none" />
+        <rect x="155" y="405" width="25" height="35" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
+        <rect x="190" y="405" width="25" height="35" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
+        <rect x="155" y="455" width="25" height="35" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
+        <rect x="190" y="455" width="25" height="35" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
+        <rect x="155" y="505" width="25" height="35" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
+        <rect x="190" y="505" width="25" height="35" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
+        <rect x="155" y="555" width="25" height="35" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" fill="none" />
+        <rect x="190" y="555" width="25" height="35" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" fill="none" />
+
+        {/* Small building far left */}
+        <rect x="-20" y="500" width="60" height="400" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
+        <rect x="-8" y="525" width="16" height="24" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
+        <rect x="16" y="525" width="16" height="24" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
+        <rect x="-8" y="562" width="16" height="24" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" fill="none" />
+        <rect x="16" y="562" width="16" height="24" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" fill="none" />
+
+        {/* Crane left side */}
+        <line x1="270" y1="280" x2="270" y2="900" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" />
+        <line x1="240" y1="300" x2="330" y2="300" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" />
+        <line x1="270" y1="300" x2="245" y2="370" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" />
+        <line x1="310" y1="300" x2="310" y2="380" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" />
+        <rect x="264" y="274" width="12" height="12" stroke="#FC4C00" strokeOpacity="0.12" strokeWidth="0.5" fill="none" />
+
+        {/* Perspective lines from left vanishing point */}
+        <line x1="350" y1="350" x2="0" y2="100" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" />
+        <line x1="350" y1="350" x2="0" y2="250" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" />
+        <line x1="350" y1="350" x2="0" y2="450" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" />
+        <line x1="350" y1="350" x2="0" y2="650" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" />
+        <line x1="350" y1="350" x2="100" y2="900" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" />
+
+        {/* Horizontal dashed floor lines left */}
+        <line x1="0" y1="600" x2="300" y2="600" stroke="white" strokeOpacity="0.025" strokeWidth="0.5" strokeDasharray="8 12" />
+        <line x1="0" y1="750" x2="250" y2="750" stroke="white" strokeOpacity="0.025" strokeWidth="0.5" strokeDasharray="8 12" />
+
+        {/* Ground line left */}
+        <line x1="0" y1="900" x2="350" y2="900" stroke="white" strokeOpacity="0.06" strokeWidth="0.7" />
       </svg>
 
       {/* Warm ambient glows */}
