@@ -135,68 +135,98 @@ function Nav() {
 function Hero() {
   return (
     <section className="relative min-h-screen flex items-center bg-black pt-20 overflow-hidden">
-      {/* Subtle architectural wireframe background */}
+      {/* Architectural wireframe background */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none"
         viewBox="0 0 1440 900"
         fill="none"
         preserveAspectRatio="xMidYMid slice"
       >
-        {/* Grid of fine lines — blueprint feel */}
         <defs>
-          <linearGradient id="archFade" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="white" stopOpacity="0.03" />
-            <stop offset="100%" stopColor="white" stopOpacity="0" />
+          <linearGradient id="buildingGlow" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#FC4C00" stopOpacity="0.06" />
+            <stop offset="100%" stopColor="#FC4C00" stopOpacity="0" />
           </linearGradient>
-          <linearGradient id="archFadeH" x1="0" y1="0" x2="1" y2="0">
+          <linearGradient id="groundFade" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="white" stopOpacity="0" />
-            <stop offset="40%" stopColor="white" stopOpacity="0.025" />
-            <stop offset="100%" stopColor="white" stopOpacity="0" />
+            <stop offset="30%" stopColor="white" stopOpacity="0.08" />
+            <stop offset="100%" stopColor="white" stopOpacity="0.03" />
           </linearGradient>
         </defs>
 
-        {/* Perspective grid lines converging — architectural depth */}
-        <line x1="900" y1="200" x2="1400" y2="0" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" />
-        <line x1="900" y1="200" x2="1440" y2="100" stroke="white" strokeOpacity="0.025" strokeWidth="0.5" />
-        <line x1="900" y1="200" x2="1440" y2="250" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" />
-        <line x1="900" y1="200" x2="1440" y2="400" stroke="white" strokeOpacity="0.025" strokeWidth="0.5" />
-        <line x1="900" y1="200" x2="1300" y2="600" stroke="white" strokeOpacity="0.02" strokeWidth="0.5" />
+        {/* ── Perspective lines from vanishing point ── */}
+        <line x1="850" y1="250" x2="1440" y2="0" stroke="white" strokeOpacity="0.07" strokeWidth="0.5" />
+        <line x1="850" y1="250" x2="1440" y2="120" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" />
+        <line x1="850" y1="250" x2="1440" y2="300" stroke="white" strokeOpacity="0.07" strokeWidth="0.5" />
+        <line x1="850" y1="250" x2="1440" y2="500" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" />
+        <line x1="850" y1="250" x2="1350" y2="700" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" />
+        <line x1="850" y1="250" x2="1100" y2="900" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" />
 
-        {/* Tall building silhouette — right side */}
-        <rect x="1050" y="180" width="120" height="720" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
-        <rect x="1060" y="200" width="30" height="45" stroke="white" strokeOpacity="0.025" strokeWidth="0.5" fill="none" />
-        <rect x="1100" y="200" width="30" height="45" stroke="white" strokeOpacity="0.025" strokeWidth="0.5" fill="none" />
-        <rect x="1140" y="200" width="20" height="45" stroke="white" strokeOpacity="0.025" strokeWidth="0.5" fill="none" />
-        <rect x="1060" y="260" width="30" height="45" stroke="white" strokeOpacity="0.02" strokeWidth="0.5" fill="none" />
-        <rect x="1100" y="260" width="30" height="45" stroke="white" strokeOpacity="0.02" strokeWidth="0.5" fill="none" />
-        <rect x="1140" y="260" width="20" height="45" stroke="white" strokeOpacity="0.02" strokeWidth="0.5" fill="none" />
-        <rect x="1060" y="320" width="30" height="45" stroke="white" strokeOpacity="0.015" strokeWidth="0.5" fill="none" />
-        <rect x="1100" y="320" width="30" height="45" stroke="white" strokeOpacity="0.015" strokeWidth="0.5" fill="none" />
-        <rect x="1060" y="380" width="30" height="45" stroke="white" strokeOpacity="0.015" strokeWidth="0.5" fill="none" />
-        <rect x="1100" y="380" width="30" height="45" stroke="white" strokeOpacity="0.015" strokeWidth="0.5" fill="none" />
+        {/* ── Main tower — tall, right side ── */}
+        <rect x="1020" y="80" width="140" height="820" stroke="white" strokeOpacity="0.1" strokeWidth="0.7" fill="url(#buildingGlow)" />
+        {/* Windows grid */}
+        <rect x="1035" y="110" width="32" height="48" stroke="white" strokeOpacity="0.07" strokeWidth="0.5" fill="none" />
+        <rect x="1075" y="110" width="32" height="48" stroke="white" strokeOpacity="0.07" strokeWidth="0.5" fill="none" />
+        <rect x="1115" y="110" width="32" height="48" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
+        <rect x="1035" y="175" width="32" height="48" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
+        <rect x="1075" y="175" width="32" height="48" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
+        <rect x="1115" y="175" width="32" height="48" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
+        <rect x="1035" y="240" width="32" height="48" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
+        <rect x="1075" y="240" width="32" height="48" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
+        <rect x="1115" y="240" width="32" height="48" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
+        <rect x="1035" y="305" width="32" height="48" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
+        <rect x="1075" y="305" width="32" height="48" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
+        <rect x="1115" y="305" width="32" height="48" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
+        <rect x="1035" y="370" width="32" height="48" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
+        <rect x="1075" y="370" width="32" height="48" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
+        <rect x="1035" y="435" width="32" height="48" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" fill="none" />
+        <rect x="1075" y="435" width="32" height="48" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" fill="none" />
+        {/* Rooftop accent */}
+        <line x1="1020" y1="80" x2="1090" y2="50" stroke="#FC4C00" strokeOpacity="0.12" strokeWidth="0.7" />
+        <line x1="1160" y1="80" x2="1090" y2="50" stroke="#FC4C00" strokeOpacity="0.12" strokeWidth="0.7" />
 
-        {/* Second shorter building */}
-        <rect x="1200" y="350" width="90" height="550" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" fill="none" />
-        <rect x="1210" y="370" width="25" height="35" stroke="white" strokeOpacity="0.02" strokeWidth="0.5" fill="none" />
-        <rect x="1245" y="370" width="25" height="35" stroke="white" strokeOpacity="0.02" strokeWidth="0.5" fill="none" />
-        <rect x="1210" y="420" width="25" height="35" stroke="white" strokeOpacity="0.015" strokeWidth="0.5" fill="none" />
-        <rect x="1245" y="420" width="25" height="35" stroke="white" strokeOpacity="0.015" strokeWidth="0.5" fill="none" />
-        <rect x="1210" y="470" width="25" height="35" stroke="white" strokeOpacity="0.015" strokeWidth="0.5" fill="none" />
-        <rect x="1245" y="470" width="25" height="35" stroke="white" strokeOpacity="0.015" strokeWidth="0.5" fill="none" />
+        {/* ── Second building — medium ── */}
+        <rect x="1190" y="280" width="110" height="620" stroke="white" strokeOpacity="0.08" strokeWidth="0.7" fill="none" />
+        <rect x="1203" y="305" width="28" height="40" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
+        <rect x="1240" y="305" width="28" height="40" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
+        <rect x="1275" y="305" width="16" height="40" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
+        <rect x="1203" y="360" width="28" height="40" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
+        <rect x="1240" y="360" width="28" height="40" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
+        <rect x="1203" y="415" width="28" height="40" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
+        <rect x="1240" y="415" width="28" height="40" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
+        <rect x="1203" y="470" width="28" height="40" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
+        <rect x="1240" y="470" width="28" height="40" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
 
-        {/* Thin tower / crane element */}
-        <line x1="1020" y1="100" x2="1020" y2="900" stroke="white" strokeOpacity="0.025" strokeWidth="0.5" />
-        <line x1="1000" y1="120" x2="1100" y2="120" stroke="white" strokeOpacity="0.02" strokeWidth="0.5" />
-        <line x1="1020" y1="120" x2="980" y2="180" stroke="white" strokeOpacity="0.02" strokeWidth="0.5" />
+        {/* ── Small building — far right ── */}
+        <rect x="1330" y="450" width="80" height="450" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
+        <rect x="1342" y="475" width="22" height="32" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
+        <rect x="1372" y="475" width="22" height="32" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
+        <rect x="1342" y="520" width="22" height="32" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
+        <rect x="1372" y="520" width="22" height="32" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
 
-        {/* Horizontal floor lines */}
-        <line x1="950" y1="900" x2="1440" y2="900" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" />
-        <line x1="980" y1="700" x2="1350" y2="700" stroke="white" strokeOpacity="0.015" strokeWidth="0.5" />
-        <line x1="1000" y1="500" x2="1300" y2="500" stroke="white" strokeOpacity="0.015" strokeWidth="0.5" />
+        {/* ── Crane ── */}
+        <line x1="980" y1="60" x2="980" y2="900" stroke="white" strokeOpacity="0.08" strokeWidth="0.7" />
+        <line x1="940" y1="80" x2="1080" y2="80" stroke="white" strokeOpacity="0.07" strokeWidth="0.7" />
+        <line x1="980" y1="80" x2="940" y2="160" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" />
+        <line x1="980" y1="80" x2="960" y2="160" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" />
+        {/* Crane cable */}
+        <line x1="1060" y1="80" x2="1060" y2="180" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" />
+        {/* Crane top marker */}
+        <rect x="974" y="55" width="12" height="12" stroke="#FC4C00" strokeOpacity="0.15" strokeWidth="0.5" fill="none" />
 
-        {/* Subtle angular shape — bottom left, very faint */}
-        <polygon points="0,900 200,650 350,900" stroke="white" strokeOpacity="0.02" strokeWidth="0.5" fill="none" />
-        <line x1="100" y1="775" x2="275" y2="775" stroke="white" strokeOpacity="0.015" strokeWidth="0.5" />
+        {/* ── Ground line ── */}
+        <line x1="800" y1="900" x2="1440" y2="900" stroke="url(#groundFade)" strokeWidth="1" />
+        <line x1="850" y1="898" x2="1440" y2="898" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" />
+
+        {/* ── Horizontal floor lines through buildings ── */}
+        <line x1="970" y1="550" x2="1420" y2="550" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" strokeDasharray="8 12" />
+        <line x1="970" y1="700" x2="1420" y2="700" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" strokeDasharray="8 12" />
+
+        {/* ── Bottom-left angular structure (subtle) ── */}
+        <polygon points="0,900 180,620 320,900" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
+        <polygon points="60,900 200,720 300,900" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
+        <line x1="90" y1="760" x2="260" y2="760" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" />
+        <line x1="120" y1="830" x2="240" y2="830" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" />
       </svg>
 
       {/* Warm ambient glows */}
