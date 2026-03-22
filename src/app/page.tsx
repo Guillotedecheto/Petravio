@@ -452,6 +452,146 @@ function Solution() {
   );
 }
 
+/* ─── 4b. COST COMPARISON — "LE VRAI COÛT D'UN RDV" ─── */
+function CostComparison() {
+  const cards = [
+    {
+      title: "En interne",
+      cost: "540–1 370€",
+      costColor: "#A32D2D",
+      subtitle: "par RDV qualifié",
+      items: [
+        "Salaire chargé commercial",
+        "Temps dirigeant non facturé",
+        "CRM & outils",
+        "Recrutement & formation",
+      ],
+      featured: false,
+    },
+    {
+      title: "Agence généraliste",
+      cost: "300–600€",
+      costColor: "#BD3900",
+      subtitle: "par RDV — sans garantie secteur",
+      items: [
+        "Templates génériques",
+        "Pas de connaissance bâtiment",
+        "No-show fréquents",
+        "Engagement long terme imposé",
+      ],
+      featured: false,
+    },
+    {
+      title: "Petravio",
+      cost: "175–300€",
+      costColor: "#FC4C00",
+      subtitle: "par RDV qualifié livré dans votre agenda",
+      items: [
+        "Spécialisé bâtiment & construction",
+        "Zéro charge sociale",
+        "Opérationnel en 30 jours",
+        "Sans recrutement",
+      ],
+      featured: true,
+    },
+  ];
+
+  const stats = [
+    { num: "3–7×", label: "moins cher qu'un commercial interne" },
+    { num: "30 jours", label: "pour être opérationnel — pas 3 mois de recrutement" },
+    { num: "0€", label: "de charges sociales, CRM ou outils à votre charge" },
+  ];
+
+  return (
+    <section className="bg-[#0A0A0A] py-[100px] px-6 border-t border-flame/20">
+      <div className="max-w-7xl mx-auto">
+        <p className="text-amber font-sora font-semibold text-sm tracking-widest uppercase fade-in">
+          Pourquoi Petravio
+        </p>
+        <h2 className="mt-4 font-sora font-semibold text-3xl sm:text-4xl md:text-5xl text-white leading-tight max-w-4xl fade-in">
+          Un RDV qualifié vous coûte 175–300€ avec Petravio.
+          <br className="hidden sm:block" />
+          <span className="text-white/60">
+            {" "}Entre 540€ et 1 370€ si vous le faites vous-même.
+          </span>
+        </h2>
+        <p className="mt-6 text-white/50 font-sora font-light text-lg max-w-2xl leading-relaxed fade-in">
+          Le calcul est simple. Voici ce que vous payez réellement aujourd&apos;hui — que vous le voyiez ou non.
+        </p>
+
+        {/* Cards */}
+        <div className="mt-16 grid md:grid-cols-3 gap-[1.5px] bg-[#222]">
+          {cards.map((card, i) => (
+            <div
+              key={i}
+              className={`fade-in bg-[#111] p-8 flex flex-col ${
+                card.featured ? "border border-flame" : "border border-[#222]"
+              } ${i === 2 ? "md:order-last order-last" : ""}`}
+              style={{ transitionDelay: `${i * 100}ms` }}
+            >
+              <h3 className="font-sora font-semibold text-sm tracking-widest uppercase text-white/70 mb-6">
+                {card.title}
+              </h3>
+              <p className="font-sora font-semibold text-4xl md:text-5xl" style={{ color: card.costColor }}>
+                {card.cost}
+              </p>
+              <p className="mt-2 text-white/50 text-sm font-sora">{card.subtitle}</p>
+
+              <ul className="mt-8 space-y-3 flex-1">
+                {card.items.map((item, j) => (
+                  <li key={j} className="flex items-start gap-2.5 text-sm leading-relaxed">
+                    {card.featured ? (
+                      <>
+                        <span className="mt-0.5 text-[#3B6D11] flex-shrink-0">✓</span>
+                        <span className="text-[#3B6D11]">{item}</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="mt-0.5 text-white/25 flex-shrink-0">·</span>
+                        <span className="text-white/40">{item}</span>
+                      </>
+                    )}
+                  </li>
+                ))}
+              </ul>
+
+              {card.featured && (
+                <p className="mt-8 pt-4 border-t border-flame/30 font-sora font-semibold text-xs tracking-widest uppercase text-flame">
+                  3–7× moins cher qu&apos;en interne
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Stats row */}
+        <div className="mt-16 fade-in flex flex-col md:flex-row items-center justify-center gap-8 md:gap-0 md:divide-x md:divide-white/10">
+          {stats.map((stat, i) => (
+            <div key={i} className="px-8 md:px-12 text-center">
+              <p className="font-sora font-semibold text-[48px] leading-none text-flame">
+                {stat.num}
+              </p>
+              <p className="mt-3 text-white/50 text-sm font-dm-sans max-w-[220px] mx-auto">
+                {stat.label}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <div className="mt-14 text-center fade-in">
+          <a
+            href="#livraison"
+            className="inline-block border border-white/30 text-white px-8 py-3.5 rounded-md font-sora font-semibold text-sm hover:border-white/60 transition-colors"
+          >
+            Voir nos offres
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ─── 5. ICP SECTION ─── */
 function ICP() {
   const profiles = [
@@ -654,6 +794,7 @@ export default function Home() {
       <SocialProof />
       <Problem />
       <Solution />
+      <CostComparison />
       <ICP />
       <ValueProp />
       <Footer />
