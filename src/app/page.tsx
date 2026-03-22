@@ -483,9 +483,9 @@ function CostComparison() {
     },
     {
       title: "Petravio",
-      cost: "175–300€",
+      cost: "3–7×",
       costColor: "#FC4C00",
-      subtitle: "par RDV qualifié livré dans votre agenda",
+      subtitle: "moins cher en moyenne",
       items: [
         "Spécialisé bâtiment & construction",
         "Zéro charge sociale",
@@ -497,7 +497,7 @@ function CostComparison() {
   ];
 
   const stats = [
-    { num: "3–7×", label: "moins cher qu'un commercial interne" },
+    { num: "87%", label: "de réduction moyenne vs. prospection interne" },
     { num: "30 jours", label: "pour être opérationnel — pas 3 mois de recrutement" },
     { num: "0€", label: "de charges sociales, CRM ou outils à votre charge" },
   ];
@@ -509,14 +509,14 @@ function CostComparison() {
           Pourquoi Petravio
         </p>
         <h2 className="mt-4 font-sora font-semibold text-3xl sm:text-4xl md:text-5xl text-white leading-tight max-w-4xl fade-in">
-          Un RDV qualifié vous coûte 175–300€ avec Petravio.
+          Chaque RDV que vous cherchez seul vous coûte entre 540€ et 1 370€.
           <br className="hidden sm:block" />
           <span className="text-white/60">
-            {" "}Entre 540€ et 1 370€ si vous le faites vous-même.
+            {" "}La plupart des dirigeants ne le savent pas.
           </span>
         </h2>
         <p className="mt-6 text-white/50 font-sora font-light text-lg max-w-2xl leading-relaxed fade-in">
-          Le calcul est simple. Voici ce que vous payez réellement aujourd&apos;hui — que vous le voyiez ou non.
+          Temps passé, salaires, outils, opportunités manquées — le vrai coût de la prospection interne est souvent invisible.
         </p>
 
         {/* Cards */}
@@ -557,7 +557,7 @@ function CostComparison() {
 
               {card.featured && (
                 <p className="mt-8 pt-4 border-t border-flame/30 font-sora font-semibold text-xs tracking-widest uppercase text-flame">
-                  3–7× moins cher qu&apos;en interne
+                  En moyenne, une fraction du coût interne
                 </p>
               )}
             </div>
