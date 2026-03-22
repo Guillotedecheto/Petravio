@@ -489,7 +489,7 @@ function CostComparison() {
       items: [
         "Spécialisé bâtiment & construction",
         "Zéro charge sociale",
-        "Opérationnel en 1 semaine",
+        "Opérationnel en 7 jours",
         "Sans recrutement",
       ],
       featured: true,
@@ -498,7 +498,7 @@ function CostComparison() {
 
   const stats = [
     { num: "87%", label: "de réduction moyenne vs. prospection interne" },
-    { num: "1 sem.", label: "pour être opérationnel — pas 3 mois de recrutement" },
+    { num: "7 jours", label: "pour être opérationnel — pas 3 mois de recrutement" },
     { num: "0€", label: "de charges sociales, CRM ou outils à votre charge" },
   ];
 
