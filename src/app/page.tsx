@@ -59,21 +59,23 @@ const CalendarIcon = () => (
   </svg>
 );
 
-const BuildingIcon = () => (
+/* Cube icon — Fabricants de matériaux */
+const CubeIcon = () => (
   <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FC4C00" strokeWidth="1.5">
-    <rect x="6" y="4" width="24" height="28" rx="2" />
-    <path d="M12 10h4M20 10h4M12 16h4M20 16h4M12 22h4M20 22h4" />
-    <rect x="14" y="26" width="8" height="6" />
+    <path d="M18 4L4 12v12l14 8 14-8V12L18 4z" />
+    <path d="M4 12l14 8 14-8M18 20v12" />
   </svg>
 );
 
-const HardhatIcon = () => (
+/* Arrows icon — Négociants en matériaux */
+const ArrowsIcon = () => (
   <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FC4C00" strokeWidth="1.5">
-    <path d="M6 22h24M10 22c0-7 3-12 8-12s8 5 8 12" />
-    <rect x="6" y="22" width="24" height="6" rx="2" />
+    <path d="M8 18h20M22 12l6 6-6 6" />
+    <path d="M28 26H8M14 32l-6-6 6-6" />
   </svg>
 );
 
+/* Wrench icon — Artisans 2nd œuvre */
 const WrenchIcon = () => (
   <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FC4C00" strokeWidth="1.5">
     <path d="M22 8a8 8 0 01-6.5 12.5L8 28l-2-2 7.5-7.5A8 8 0 0122 8z" />
@@ -81,18 +83,33 @@ const WrenchIcon = () => (
   </svg>
 );
 
-const BoxIcon = () => (
+/* Leaf/Energy icon — Rénovation énergétique */
+const LeafIcon = () => (
   <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FC4C00" strokeWidth="1.5">
-    <path d="M18 4L4 12v12l14 8 14-8V12L18 4z" />
-    <path d="M4 12l14 8 14-8M18 20v12" />
+    <path d="M8 30C8 30 8 16 18 8c10 8 10 22 10 22" />
+    <path d="M18 30V16" />
+    <path d="M18 20c-3-2-6-2-6-2" />
+    <path d="M18 24c3-2 5-2 5-2" />
   </svg>
 );
 
-const TowerIcon = () => (
+/* Crane icon — Loueurs de matériel BTP */
+const CraneIcon = () => (
   <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FC4C00" strokeWidth="1.5">
-    <path d="M10 32V8l8-4 8 4v24" />
-    <path d="M10 14h16M10 20h16M10 26h16" />
-    <rect x="16" y="26" width="4" height="6" />
+    <line x1="12" y1="6" x2="12" y2="32" />
+    <line x1="6" y1="10" x2="30" y2="10" />
+    <line x1="12" y1="10" x2="8" y2="18" />
+    <line x1="28" y1="10" x2="28" y2="20" />
+    <rect x="24" y="20" width="8" height="6" rx="1" />
+    <line x1="8" y1="32" x2="16" y2="32" />
+  </svg>
+);
+
+/* Plus icon — Et bien d'autres */
+const PlusIcon = () => (
+  <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FC4C00" strokeWidth="1.5">
+    <circle cx="18" cy="18" r="14" />
+    <path d="M18 10v16M10 18h16" />
   </svg>
 );
 
@@ -596,29 +613,40 @@ function CostComparison() {
 function ICP() {
   const profiles = [
     {
-      icon: <BuildingIcon />,
-      title: "Architectes",
-      pain: "Dépendent des concours et du réseau pour décrocher de nouveaux projets.",
+      icon: <CubeIcon />,
+      title: "Fabricants de matériaux",
+      desc: "Développez votre réseau de distributeurs et prescripteurs.",
+      featured: false,
     },
     {
-      icon: <HardhatIcon />,
-      title: "Entrepreneurs généraux",
-      pain: "Pipeline irrégulier entre les gros chantiers, difficile de lisser l'activité.",
+      icon: <ArrowsIcon />,
+      title: "Négociants en matériaux",
+      desc: "Identifiez les chantiers avant vos concurrents.",
+      featured: false,
     },
     {
       icon: <WrenchIcon />,
-      title: "Artisans 2nd œuvre",
-      pain: "Submergés par le chantier en cours, zéro temps pour prospecter le suivant.",
+      title: "Artisans & entreprises 2nd œuvre",
+      desc: "Accédez aux donneurs d\u0027ordre qui ont des chantiers actifs.",
+      featured: false,
     },
     {
-      icon: <BoxIcon />,
-      title: "Négociants matériaux",
-      pain: "Marché concurrentiel, besoin constant de nouveaux comptes pros.",
+      icon: <LeafIcon />,
+      title: "Sociétés de rénovation énergétique",
+      desc: "Des leads exclusifs — pas partagés avec 5 concurrents.",
+      featured: false,
     },
     {
-      icon: <TowerIcon />,
-      title: "Promoteurs",
-      pain: "Cycles longs, besoin de remplir le pipeline 12 mois en avance.",
+      icon: <CraneIcon />,
+      title: "Loueurs de matériel BTP",
+      desc: "Soyez présent avant le démarrage du chantier.",
+      featured: false,
+    },
+    {
+      icon: <PlusIcon />,
+      title: "Et bien d\u0027autres...",
+      desc: "Vous êtes dans le bâtiment et vous prospectez trop peu ? Parlons-en.",
+      featured: true,
     },
   ];
 
@@ -629,18 +657,31 @@ function ICP() {
           Pour qui
         </p>
         <h2 className="mt-4 font-sora font-semibold text-3xl sm:text-4xl md:text-5xl text-white leading-tight max-w-3xl fade-in">
-          Spécialisé bâtiment. Pas généraliste.
+          Spécialisé secteur du bâtiment &amp; de la construction.
         </h2>
 
-        <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+        <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {profiles.map((p, i) => (
             <div
               key={i}
-              className="fade-in bg-dark-gray border border-white/10 rounded-lg p-6 hover:border-flame transition-colors group"
+              className={`fade-in bg-dark-gray rounded-lg p-6 transition-colors group ${
+                p.featured
+                  ? "border border-flame hover:border-flame"
+                  : "border border-white/10 hover:border-flame"
+              }`}
+              style={{ transitionDelay: `${i * 80}ms` }}
             >
               <div className="mb-4 group-hover:scale-110 transition-transform">{p.icon}</div>
               <h3 className="font-sora font-semibold text-lg text-white">{p.title}</h3>
-              <p className="mt-2 text-white/50 text-sm leading-relaxed">{p.pain}</p>
+              <p className="mt-2 text-white/50 text-sm leading-relaxed">{p.desc}</p>
+              {p.featured && (
+                <a
+                  href="#contact"
+                  className="mt-4 inline-block text-flame font-sora font-semibold text-sm hover:text-flame/80 transition-colors"
+                >
+                  Parlons-en →
+                </a>
+              )}
             </div>
           ))}
         </div>
