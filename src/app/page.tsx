@@ -194,128 +194,208 @@ function Nav() {
   );
 }
 
-/* ─── 1. HERO — with parallax wireframe ─── */
-function Hero() {
-  const [scrollY, setScrollY] = useState(0);
+/* ─── Particle Mesh Canvas ─── */
+function ParticleMesh() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    let mouse = { x: -9999, y: -9999 };
+
+    const resize = () => {
+      canvas.width = canvas.offsetWidth * (window.devicePixelRatio || 1);
+      canvas.height = canvas.offsetHeight * (window.devicePixelRatio || 1);
+      ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+    };
+    resize();
+
+    const w = () => canvas.offsetWidth;
+    const h = () => canvas.offsetHeight;
+
+    // Building skyline silhouette points + scattered particles
+    const buildSkylinePoints = () => {
+      const pts: { x: number; y: number; ox: number; oy: number; vx: number; vy: number; r: number; bright: boolean }[] = [];
+      const W = w();
+      const H = h();
+
+      // Skyline outline nodes — forming building shapes on the right
+      const skyline = [
+        // Building 1 — tall tower right
+        { x: 0.65, y: 0.15 }, { x: 0.65, y: 0.85 }, { x: 0.72, y: 0.85 }, { x: 0.72, y: 0.15 },
+        { x: 0.68, y: 0.12 }, // roof peak
+        { x: 0.66, y: 0.3 }, { x: 0.71, y: 0.3 }, { x: 0.66, y: 0.45 }, { x: 0.71, y: 0.45 },
+        { x: 0.66, y: 0.6 }, { x: 0.71, y: 0.6 },
+        // Building 2 — medium right
+        { x: 0.75, y: 0.35 }, { x: 0.75, y: 0.85 }, { x: 0.83, y: 0.85 }, { x: 0.83, y: 0.35 },
+        { x: 0.77, y: 0.45 }, { x: 0.81, y: 0.45 }, { x: 0.77, y: 0.55 }, { x: 0.81, y: 0.55 },
+        { x: 0.77, y: 0.65 }, { x: 0.81, y: 0.65 },
+        // Building 3 — small far right
+        { x: 0.87, y: 0.5 }, { x: 0.87, y: 0.85 }, { x: 0.93, y: 0.85 }, { x: 0.93, y: 0.5 },
+        { x: 0.89, y: 0.6 }, { x: 0.91, y: 0.6 }, { x: 0.89, y: 0.7 }, { x: 0.91, y: 0.7 },
+        // Crane
+        { x: 0.6, y: 0.1 }, { x: 0.6, y: 0.85 }, { x: 0.55, y: 0.12 }, { x: 0.62, y: 0.12 },
+        { x: 0.58, y: 0.2 },
+        // Left buildings
+        { x: 0.05, y: 0.3 }, { x: 0.05, y: 0.85 }, { x: 0.1, y: 0.85 }, { x: 0.1, y: 0.3 },
+        { x: 0.07, y: 0.27 },
+        { x: 0.06, y: 0.4 }, { x: 0.09, y: 0.4 }, { x: 0.06, y: 0.55 }, { x: 0.09, y: 0.55 },
+        { x: 0.13, y: 0.45 }, { x: 0.13, y: 0.85 }, { x: 0.19, y: 0.85 }, { x: 0.19, y: 0.45 },
+        { x: 0.15, y: 0.55 }, { x: 0.17, y: 0.55 }, { x: 0.15, y: 0.65 }, { x: 0.17, y: 0.65 },
+        // Ground line
+        { x: 0.0, y: 0.85 }, { x: 0.25, y: 0.85 }, { x: 0.5, y: 0.85 }, { x: 0.75, y: 0.85 }, { x: 1.0, y: 0.85 },
+      ];
+
+      // Add skyline points with slight randomness
+      skyline.forEach((p) => {
+        const px = p.x * W;
+        const py = p.y * H;
+        pts.push({
+          x: px, y: py, ox: px, oy: py,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
+          r: Math.random() * 1.5 + 1,
+          bright: Math.random() > 0.7,
+        });
+      });
+
+      // Scatter additional particles across canvas
+      for (let i = 0; i < 60; i++) {
+        const px = Math.random() * W;
+        const py = Math.random() * H;
+        pts.push({
+          x: px, y: py, ox: px, oy: py,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: (Math.random() - 0.5) * 0.4,
+          r: Math.random() * 1.2 + 0.5,
+          bright: Math.random() > 0.85,
+        });
+      }
+
+      return pts;
+    };
+
+    let particles = buildSkylinePoints();
+
+    const connectionDist = 120;
+
+    const draw = () => {
+      ctx.clearRect(0, 0, w(), h());
+
+      // Update positions — gentle drift around origin
+      particles.forEach((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // Soft spring back to origin
+        const dx = p.ox - p.x;
+        const dy = p.oy - p.y;
+        p.vx += dx * 0.003;
+        p.vy += dy * 0.003;
+
+        // Mouse repulsion
+        const mx = p.x - mouse.x;
+        const my = p.y - mouse.y;
+        const md = Math.sqrt(mx * mx + my * my);
+        if (md < 150) {
+          const force = (150 - md) / 150;
+          p.vx += (mx / md) * force * 0.5;
+          p.vy += (my / md) * force * 0.5;
+        }
+
+        // Damping
+        p.vx *= 0.98;
+        p.vy *= 0.98;
+      });
+
+      // Draw connections
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < connectionDist) {
+            const alpha = (1 - dist / connectionDist) * 0.15;
+            const isBright = particles[i].bright || particles[j].bright;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = isBright
+              ? `rgba(252, 76, 0, ${alpha * 1.5})`
+              : `rgba(255, 255, 255, ${alpha})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw particles
+      particles.forEach((p) => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        if (p.bright) {
+          ctx.fillStyle = `rgba(252, 76, 0, 0.8)`;
+          ctx.shadowColor = "#FC4C00";
+          ctx.shadowBlur = 8;
+        } else {
+          ctx.fillStyle = `rgba(255, 255, 255, 0.4)`;
+          ctx.shadowColor = "transparent";
+          ctx.shadowBlur = 0;
+        }
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      });
+
+      animId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    const handleMouse = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    };
+    const handleLeave = () => { mouse.x = -9999; mouse.y = -9999; };
+
+    const handleResize = () => {
+      cancelAnimationFrame(animId);
+      resize();
+      particles = buildSkylinePoints();
+      draw();
+    };
+
+    canvas.addEventListener("mousemove", handleMouse);
+    canvas.addEventListener("mouseleave", handleLeave);
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      cancelAnimationFrame(animId);
+      canvas.removeEventListener("mousemove", handleMouse);
+      canvas.removeEventListener("mouseleave", handleLeave);
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full pointer-events-auto"
+      style={{ opacity: 0.7 }}
+    />
+  );
+}
+
+/* ─── 1. HERO — with particle mesh network ─── */
+function Hero() {
+  return (
     <section className="relative min-h-screen flex items-center bg-black pt-20 overflow-hidden grain">
-      {/* Architectural wireframe background — parallax */}
-      <svg
-        className="absolute inset-0 w-full h-full pointer-events-none transition-transform will-change-transform"
-        style={{ transform: `translateY(${scrollY * 0.15}px)` }}
-        viewBox="0 0 1440 900"
-        fill="none"
-        preserveAspectRatio="xMidYMid slice"
-      >
-        <defs>
-          <linearGradient id="buildingGlow" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#FC4C00" stopOpacity="0.06" />
-            <stop offset="100%" stopColor="#FC4C00" stopOpacity="0" />
-          </linearGradient>
-          <linearGradient id="groundFade" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="white" stopOpacity="0" />
-            <stop offset="30%" stopColor="white" stopOpacity="0.08" />
-            <stop offset="100%" stopColor="white" stopOpacity="0.03" />
-          </linearGradient>
-        </defs>
-
-        {/* Perspective lines from vanishing point */}
-        <line x1="850" y1="250" x2="1440" y2="0" stroke="white" strokeOpacity="0.07" strokeWidth="0.5" />
-        <line x1="850" y1="250" x2="1440" y2="120" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" />
-        <line x1="850" y1="250" x2="1440" y2="300" stroke="white" strokeOpacity="0.07" strokeWidth="0.5" />
-        <line x1="850" y1="250" x2="1440" y2="500" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" />
-        <line x1="850" y1="250" x2="1350" y2="700" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" />
-        <line x1="850" y1="250" x2="1100" y2="900" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" />
-
-        {/* Main tower */}
-        <rect x="1020" y="80" width="140" height="820" stroke="white" strokeOpacity="0.1" strokeWidth="0.7" fill="url(#buildingGlow)" />
-        <rect x="1035" y="110" width="32" height="48" stroke="white" strokeOpacity="0.07" strokeWidth="0.5" fill="none" />
-        <rect x="1075" y="110" width="32" height="48" stroke="white" strokeOpacity="0.07" strokeWidth="0.5" fill="none" />
-        <rect x="1115" y="110" width="32" height="48" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
-        <rect x="1035" y="175" width="32" height="48" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
-        <rect x="1075" y="175" width="32" height="48" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
-        <rect x="1115" y="175" width="32" height="48" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
-        <rect x="1035" y="240" width="32" height="48" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
-        <rect x="1075" y="240" width="32" height="48" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
-        <rect x="1115" y="240" width="32" height="48" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
-        <rect x="1035" y="305" width="32" height="48" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
-        <rect x="1075" y="305" width="32" height="48" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
-        <rect x="1115" y="305" width="32" height="48" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
-        <rect x="1035" y="370" width="32" height="48" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
-        <rect x="1075" y="370" width="32" height="48" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
-        <line x1="1020" y1="80" x2="1090" y2="50" stroke="#FC4C00" strokeOpacity="0.12" strokeWidth="0.7" />
-        <line x1="1160" y1="80" x2="1090" y2="50" stroke="#FC4C00" strokeOpacity="0.12" strokeWidth="0.7" />
-
-        {/* Second building */}
-        <rect x="1190" y="280" width="110" height="620" stroke="white" strokeOpacity="0.08" strokeWidth="0.7" fill="none" />
-        <rect x="1203" y="305" width="28" height="40" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
-        <rect x="1240" y="305" width="28" height="40" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
-        <rect x="1203" y="360" width="28" height="40" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
-        <rect x="1240" y="360" width="28" height="40" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
-        <rect x="1203" y="415" width="28" height="40" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
-        <rect x="1240" y="415" width="28" height="40" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
-
-        {/* Small building far right */}
-        <rect x="1330" y="450" width="80" height="450" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
-        <rect x="1342" y="475" width="22" height="32" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
-        <rect x="1372" y="475" width="22" height="32" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
-
-        {/* Crane */}
-        <line x1="980" y1="60" x2="980" y2="900" stroke="white" strokeOpacity="0.08" strokeWidth="0.7" />
-        <line x1="940" y1="80" x2="1080" y2="80" stroke="white" strokeOpacity="0.07" strokeWidth="0.7" />
-        <line x1="980" y1="80" x2="940" y2="160" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" />
-        <line x1="1060" y1="80" x2="1060" y2="180" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" />
-        <rect x="974" y="55" width="12" height="12" stroke="#FC4C00" strokeOpacity="0.15" strokeWidth="0.5" fill="none" />
-
-        {/* Ground lines */}
-        <line x1="800" y1="900" x2="1440" y2="900" stroke="url(#groundFade)" strokeWidth="1" />
-        <line x1="970" y1="550" x2="1420" y2="550" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" strokeDasharray="8 12" />
-        <line x1="970" y1="700" x2="1420" y2="700" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" strokeDasharray="8 12" />
-
-        {/* Left side buildings */}
-        <rect x="30" y="200" width="80" height="700" stroke="white" strokeOpacity="0.08" strokeWidth="0.7" fill="none" />
-        <rect x="42" y="230" width="20" height="30" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
-        <rect x="72" y="230" width="20" height="30" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
-        <rect x="42" y="275" width="20" height="30" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
-        <rect x="72" y="275" width="20" height="30" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
-        <rect x="42" y="320" width="20" height="30" stroke="white" strokeOpacity="0.045" strokeWidth="0.5" fill="none" />
-        <rect x="72" y="320" width="20" height="30" stroke="white" strokeOpacity="0.045" strokeWidth="0.5" fill="none" />
-        <rect x="42" y="365" width="20" height="30" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
-        <rect x="72" y="365" width="20" height="30" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
-        <line x1="30" y1="200" x2="70" y2="175" stroke="#FC4C00" strokeOpacity="0.1" strokeWidth="0.7" />
-        <line x1="110" y1="200" x2="70" y2="175" stroke="#FC4C00" strokeOpacity="0.1" strokeWidth="0.7" />
-
-        {/* Medium building left */}
-        <rect x="140" y="380" width="100" height="520" stroke="white" strokeOpacity="0.07" strokeWidth="0.7" fill="none" />
-        <rect x="155" y="405" width="25" height="35" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
-        <rect x="190" y="405" width="25" height="35" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
-        <rect x="155" y="455" width="25" height="35" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
-        <rect x="190" y="455" width="25" height="35" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
-
-        {/* Small building far left */}
-        <rect x="-20" y="500" width="60" height="400" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
-
-        {/* Crane left */}
-        <line x1="270" y1="280" x2="270" y2="900" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" />
-        <line x1="240" y1="300" x2="330" y2="300" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" />
-        <line x1="270" y1="300" x2="245" y2="370" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" />
-        <rect x="264" y="274" width="12" height="12" stroke="#FC4C00" strokeOpacity="0.12" strokeWidth="0.5" fill="none" />
-
-        {/* Perspective lines left */}
-        <line x1="350" y1="350" x2="0" y2="100" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" />
-        <line x1="350" y1="350" x2="0" y2="250" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" />
-        <line x1="350" y1="350" x2="0" y2="450" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" />
-
-        {/* Ground line left */}
-        <line x1="0" y1="900" x2="350" y2="900" stroke="white" strokeOpacity="0.06" strokeWidth="0.7" />
-      </svg>
+      {/* Particle mesh canvas */}
+      <ParticleMesh />
 
       {/* Warm ambient glows */}
       <div className="absolute top-20 right-10 w-80 h-80 bg-flame/5 rounded-full blur-[100px]" />
