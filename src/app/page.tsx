@@ -205,7 +205,7 @@ function ParticleMesh() {
     if (!ctx) return;
 
     let animId: number;
-    let mouse = { x: -9999, y: -9999 };
+    const mouse = { x: -9999, y: -9999 };
 
     const resize = () => {
       canvas.width = canvas.offsetWidth * (window.devicePixelRatio || 1);
