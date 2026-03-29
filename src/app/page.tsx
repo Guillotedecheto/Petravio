@@ -374,14 +374,33 @@ function Problem() {
     {
       title: "Pas de processus sortant",
       desc: "Vous comptez sur le bouche-à-oreille et les appels entrants.",
+      icon: (
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#FC4C00" strokeWidth="1.5">
+          <circle cx="16" cy="16" r="12" />
+          <path d="M16 10v6l4 3" />
+        </svg>
+      ),
     },
     {
       title: "Pipeline imprévisible",
       desc: "Vous ne savez jamais d'où viendra le prochain chantier.",
+      icon: (
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#FC4C00" strokeWidth="1.5">
+          <path d="M4 24l6-8 5 4 6-10 7 6" />
+          <path d="M4 28h24" />
+        </svg>
+      ),
     },
     {
       title: "Pas le temps",
       desc: "La prospection prend du temps que vous n'avez pas.",
+      icon: (
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#FC4C00" strokeWidth="1.5">
+          <rect x="4" y="6" width="24" height="20" rx="3" />
+          <path d="M4 12h24" />
+          <path d="M10 18h4M18 18h4" />
+        </svg>
+      ),
     },
   ];
 
@@ -398,9 +417,10 @@ function Problem() {
           {cards.map((card, i) => (
             <div
               key={i}
-              className="fade-in bg-white border border-gray-200 rounded-lg p-8 relative overflow-hidden hover:shadow-lg transition-shadow"
+              className="fade-in bg-white border border-gray-200 rounded-lg p-8 relative overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-flame/30 group"
             >
               <div className="absolute top-0 left-0 w-full h-1 bg-flame" />
+              <div className="mb-4 group-hover:scale-110 transition-transform">{card.icon}</div>
               <h3 className="font-sora font-semibold text-xl text-black">{card.title}</h3>
               <p className="mt-3 text-gray-600 leading-relaxed">{card.desc}</p>
             </div>
@@ -449,9 +469,9 @@ function Solution() {
 
           <div className="grid md:grid-cols-3 gap-12">
             {steps.map((step, i) => (
-              <div key={i} className="fade-in text-center md:text-left">
-                <div className="flex flex-col items-center md:items-start gap-4">
-                  <div className="relative">
+              <div key={i} className="fade-in text-center md:text-left group">
+                <div className="flex flex-col items-center md:items-start gap-4 p-6 rounded-lg border border-transparent transition-all duration-300 hover:border-white/10 hover:bg-white/[0.02]">
+                  <div className="relative group-hover:scale-110 transition-transform">
                     {step.icon}
                     <span className="absolute -top-2 -right-3 font-sora font-semibold text-flame text-xs">
                       {step.num}
@@ -541,8 +561,8 @@ function CostComparison() {
           {cards.map((card, i) => (
             <div
               key={i}
-              className={`fade-in bg-[#111] p-8 flex flex-col ${
-                card.featured ? "border border-flame" : "border border-[#222]"
+              className={`fade-in bg-[#111] p-8 flex flex-col transition-all duration-300 hover:bg-[#161616] hover:-translate-y-1 hover:shadow-xl ${
+                card.featured ? "border border-flame hover:shadow-flame/10" : "border border-[#222] hover:border-white/20"
               } ${i === 2 ? "md:order-last order-last" : ""}`}
               style={{ transitionDelay: `${i * 100}ms` }}
             >
@@ -573,8 +593,8 @@ function CostComparison() {
               </ul>
 
               {card.featured && (
-                <p className="mt-8 pt-4 border-t border-flame/30 font-sora font-semibold text-xs tracking-widest uppercase text-flame">
-                  En moyenne, une fraction du coût interne
+                <p className="mt-8 pt-4 border-t border-flame/30 font-sora font-semibold text-xs tracking-widest uppercase text-flame text-center">
+                  Une fraction du coût interne
                 </p>
               )}
             </div>
@@ -717,7 +737,7 @@ function ValueProp() {
         </h2>
 
         <div className="mt-14 grid lg:grid-cols-3 gap-8">
-          <div className="fade-in">
+          <div className="fade-in p-6 rounded-lg border border-transparent transition-all duration-300 hover:border-gray-200 hover:shadow-lg">
             <h3 className="font-sora font-semibold text-lg text-black mb-6">Ce qui est inclus</h3>
             <ul className="space-y-4">
               {included.map((item, i) => (
@@ -733,7 +753,7 @@ function ValueProp() {
             </ul>
           </div>
 
-          <div className="fade-in">
+          <div className="fade-in p-6 rounded-lg border border-transparent transition-all duration-300 hover:border-gray-200 hover:shadow-lg">
             <h3 className="font-sora font-semibold text-lg text-black mb-6">
               Ce qu&apos;on ne fait pas
             </h3>
@@ -752,7 +772,7 @@ function ValueProp() {
           </div>
 
           <div className="fade-in">
-            <div className="bg-black rounded-xl p-8 h-full flex flex-col justify-center">
+            <div className="bg-black rounded-xl p-8 h-full flex flex-col justify-center transition-all duration-300 hover:shadow-2xl hover:shadow-flame/5 hover:-translate-y-1">
               <h3 className="font-sora font-semibold text-2xl text-white">
                 Prêt à remplir votre agenda ?
               </h3>
