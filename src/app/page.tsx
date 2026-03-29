@@ -194,8 +194,8 @@ function Nav() {
   );
 }
 
-/* ─── Particle Mesh Canvas ─── */
-function ParticleMesh() {
+/* ─── Blueprint Grid Canvas ─── */
+function BlueprintGrid() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -205,150 +205,218 @@ function ParticleMesh() {
     if (!ctx) return;
 
     let animId: number;
+    let time = 0;
     const mouse = { x: -9999, y: -9999 };
 
+    const dpr = window.devicePixelRatio || 1;
     const resize = () => {
-      canvas.width = canvas.offsetWidth * (window.devicePixelRatio || 1);
-      canvas.height = canvas.offsetHeight * (window.devicePixelRatio || 1);
-      ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+      canvas.width = canvas.offsetWidth * dpr;
+      canvas.height = canvas.offsetHeight * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     resize();
 
     const w = () => canvas.offsetWidth;
     const h = () => canvas.offsetHeight;
 
-    // Building skyline silhouette points + scattered particles
-    const buildSkylinePoints = () => {
-      const pts: { x: number; y: number; ox: number; oy: number; vx: number; vy: number; r: number; bright: boolean }[] = [];
+    // Node types for glowing intersections
+    type Node = { x: number; y: number; r: number; glow: boolean; pulse: number; speed: number };
+
+    const buildNodes = (): Node[] => {
       const W = w();
       const H = h();
+      const nodes: Node[] = [];
 
-      // Skyline outline nodes — forming building shapes on the right
-      const skyline = [
-        // Building 1 — tall tower right
-        { x: 0.65, y: 0.15 }, { x: 0.65, y: 0.85 }, { x: 0.72, y: 0.85 }, { x: 0.72, y: 0.15 },
-        { x: 0.68, y: 0.12 }, // roof peak
-        { x: 0.66, y: 0.3 }, { x: 0.71, y: 0.3 }, { x: 0.66, y: 0.45 }, { x: 0.71, y: 0.45 },
-        { x: 0.66, y: 0.6 }, { x: 0.71, y: 0.6 },
-        // Building 2 — medium right
-        { x: 0.75, y: 0.35 }, { x: 0.75, y: 0.85 }, { x: 0.83, y: 0.85 }, { x: 0.83, y: 0.35 },
-        { x: 0.77, y: 0.45 }, { x: 0.81, y: 0.45 }, { x: 0.77, y: 0.55 }, { x: 0.81, y: 0.55 },
-        { x: 0.77, y: 0.65 }, { x: 0.81, y: 0.65 },
-        // Building 3 — small far right
-        { x: 0.87, y: 0.5 }, { x: 0.87, y: 0.85 }, { x: 0.93, y: 0.85 }, { x: 0.93, y: 0.5 },
-        { x: 0.89, y: 0.6 }, { x: 0.91, y: 0.6 }, { x: 0.89, y: 0.7 }, { x: 0.91, y: 0.7 },
-        // Crane
-        { x: 0.6, y: 0.1 }, { x: 0.6, y: 0.85 }, { x: 0.55, y: 0.12 }, { x: 0.62, y: 0.12 },
-        { x: 0.58, y: 0.2 },
-        // Left buildings
-        { x: 0.05, y: 0.3 }, { x: 0.05, y: 0.85 }, { x: 0.1, y: 0.85 }, { x: 0.1, y: 0.3 },
-        { x: 0.07, y: 0.27 },
-        { x: 0.06, y: 0.4 }, { x: 0.09, y: 0.4 }, { x: 0.06, y: 0.55 }, { x: 0.09, y: 0.55 },
-        { x: 0.13, y: 0.45 }, { x: 0.13, y: 0.85 }, { x: 0.19, y: 0.85 }, { x: 0.19, y: 0.45 },
-        { x: 0.15, y: 0.55 }, { x: 0.17, y: 0.55 }, { x: 0.15, y: 0.65 }, { x: 0.17, y: 0.65 },
-        // Ground line
-        { x: 0.0, y: 0.85 }, { x: 0.25, y: 0.85 }, { x: 0.5, y: 0.85 }, { x: 0.75, y: 0.85 }, { x: 1.0, y: 0.85 },
+      // Floor plan structures — like architectural blueprints seen from above
+      // Main building footprint (right side)
+      const plans = [
+        // Large L-shaped building
+        [0.55, 0.15], [0.55, 0.55], [0.70, 0.55], [0.70, 0.35], [0.85, 0.35], [0.85, 0.15],
+        // Inner rooms
+        [0.60, 0.25], [0.65, 0.25], [0.60, 0.35], [0.65, 0.35], [0.60, 0.45], [0.65, 0.45],
+        [0.75, 0.25], [0.80, 0.25], [0.75, 0.15], [0.80, 0.15],
+        // Small building left
+        [0.05, 0.30], [0.05, 0.60], [0.20, 0.60], [0.20, 0.30],
+        [0.10, 0.40], [0.15, 0.40], [0.10, 0.50], [0.15, 0.50],
+        // Center structure
+        [0.30, 0.50], [0.30, 0.75], [0.50, 0.75], [0.50, 0.50],
+        [0.35, 0.58], [0.45, 0.58], [0.35, 0.67], [0.45, 0.67], [0.40, 0.62],
+        // Bottom strip — long narrow building
+        [0.10, 0.80], [0.90, 0.80], [0.90, 0.88], [0.10, 0.88],
+        [0.25, 0.80], [0.40, 0.80], [0.55, 0.80], [0.70, 0.80],
+        [0.25, 0.88], [0.40, 0.88], [0.55, 0.88], [0.70, 0.88],
+        // Scattered detail nodes
+        [0.25, 0.20], [0.35, 0.15], [0.42, 0.25], [0.48, 0.18],
+        [0.92, 0.55], [0.88, 0.65], [0.93, 0.72],
+        [0.08, 0.72], [0.15, 0.70], [0.22, 0.68],
       ];
 
-      // Add skyline points with slight randomness
-      skyline.forEach((p) => {
-        const px = p.x * W;
-        const py = p.y * H;
-        pts.push({
-          x: px, y: py, ox: px, oy: py,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: (Math.random() - 0.5) * 0.3,
-          r: Math.random() * 1.5 + 1,
-          bright: Math.random() > 0.7,
+      plans.forEach(([px, py]) => {
+        nodes.push({
+          x: px * W,
+          y: py * H,
+          r: Math.random() > 0.7 ? 2.5 : 1.5,
+          glow: Math.random() > 0.65,
+          pulse: Math.random() * Math.PI * 2,
+          speed: 0.5 + Math.random() * 1.5,
         });
       });
 
-      // Scatter additional particles across canvas
-      for (let i = 0; i < 60; i++) {
-        const px = Math.random() * W;
-        const py = Math.random() * H;
-        pts.push({
-          x: px, y: py, ox: px, oy: py,
-          vx: (Math.random() - 0.5) * 0.4,
-          vy: (Math.random() - 0.5) * 0.4,
-          r: Math.random() * 1.2 + 0.5,
-          bright: Math.random() > 0.85,
-        });
-      }
-
-      return pts;
+      return nodes;
     };
 
-    let particles = buildSkylinePoints();
-
-    const connectionDist = 120;
-
-    const draw = () => {
-      ctx.clearRect(0, 0, w(), h());
-
-      // Update positions — gentle drift around origin
-      particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-
-        // Soft spring back to origin
-        const dx = p.ox - p.x;
-        const dy = p.oy - p.y;
-        p.vx += dx * 0.003;
-        p.vy += dy * 0.003;
-
-        // Mouse repulsion
-        const mx = p.x - mouse.x;
-        const my = p.y - mouse.y;
-        const md = Math.sqrt(mx * mx + my * my);
-        if (md < 150) {
-          const force = (150 - md) / 150;
-          p.vx += (mx / md) * force * 0.5;
-          p.vy += (my / md) * force * 0.5;
-        }
-
-        // Damping
-        p.vx *= 0.98;
-        p.vy *= 0.98;
-      });
-
-      // Draw connections
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < connectionDist) {
-            const alpha = (1 - dist / connectionDist) * 0.15;
-            const isBright = particles[i].bright || particles[j].bright;
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = isBright
-              ? `rgba(252, 76, 0, ${alpha * 1.5})`
-              : `rgba(255, 255, 255, ${alpha})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
+    // Lines connecting nodes to form blueprint walls
+    const buildEdges = (nodes: Node[]): [number, number][] => {
+      const edges: [number, number][] = [];
+      const maxDist = 180;
+      for (let i = 0; i < nodes.length; i++) {
+        // Connect to nearest neighbors within range
+        const distances: { j: number; d: number }[] = [];
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x;
+          const dy = nodes[i].y - nodes[j].y;
+          const d = Math.sqrt(dx * dx + dy * dy);
+          if (d < maxDist) {
+            distances.push({ j, d });
           }
         }
+        // Keep closest 3 connections per node for clean look
+        distances.sort((a, b) => a.d - b.d);
+        distances.slice(0, 3).forEach(({ j }) => edges.push([i, j]));
+      }
+      return edges;
+    };
+
+    let nodes = buildNodes();
+    let edges = buildEdges(nodes);
+
+    const draw = () => {
+      time += 0.016;
+      ctx.clearRect(0, 0, w(), h());
+
+      // Draw subtle grid background
+      const gridSize = 40;
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.018)";
+      ctx.lineWidth = 0.5;
+      for (let x = 0; x < w(); x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h());
+        ctx.stroke();
+      }
+      for (let y = 0; y < h(); y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w(), y);
+        ctx.stroke();
       }
 
-      // Draw particles
-      particles.forEach((p) => {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        if (p.bright) {
-          ctx.fillStyle = `rgba(252, 76, 0, 0.8)`;
-          ctx.shadowColor = "#FC4C00";
-          ctx.shadowBlur = 8;
+      // Mouse proximity glow radius
+      const mouseRadius = 200;
+
+      // Draw edges (blueprint walls)
+      edges.forEach(([i, j]) => {
+        const a = nodes[i];
+        const b = nodes[j];
+        const mx = (a.x + b.x) / 2;
+        const my = (a.y + b.y) / 2;
+        const distToMouse = Math.sqrt((mx - mouse.x) ** 2 + (my - mouse.y) ** 2);
+        const mouseBoost = distToMouse < mouseRadius ? (1 - distToMouse / mouseRadius) * 0.15 : 0;
+
+        const isGlowEdge = a.glow || b.glow;
+
+        if (isGlowEdge) {
+          ctx.strokeStyle = `rgba(252, 76, 0, ${0.08 + mouseBoost})`;
+          ctx.lineWidth = 0.8;
         } else {
-          ctx.fillStyle = `rgba(255, 255, 255, 0.4)`;
-          ctx.shadowColor = "transparent";
-          ctx.shadowBlur = 0;
+          ctx.strokeStyle = `rgba(255, 255, 255, ${0.05 + mouseBoost})`;
+          ctx.lineWidth = 0.5;
         }
-        ctx.fill();
-        ctx.shadowBlur = 0;
+
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+
+        // Animated dashes on some edges
+        if (isGlowEdge) {
+          ctx.setLineDash([4, 8]);
+          ctx.lineDashOffset = -time * 20;
+          ctx.strokeStyle = `rgba(252, 76, 0, ${0.12 + mouseBoost})`;
+          ctx.lineWidth = 0.5;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
       });
+
+      // Draw nodes
+      nodes.forEach((node) => {
+        const distToMouse = Math.sqrt((node.x - mouse.x) ** 2 + (node.y - mouse.y) ** 2);
+        const mouseBoost = distToMouse < mouseRadius ? (1 - distToMouse / mouseRadius) : 0;
+        const pulseVal = Math.sin(time * node.speed + node.pulse) * 0.5 + 0.5;
+
+        if (node.glow) {
+          // Glowing orange node with pulse
+          const glowR = node.r + pulseVal * 2 + mouseBoost * 3;
+
+          // Outer glow
+          const grad = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, glowR * 6);
+          grad.addColorStop(0, `rgba(252, 76, 0, ${0.15 + mouseBoost * 0.2})`);
+          grad.addColorStop(0.5, `rgba(252, 76, 0, ${0.04 + mouseBoost * 0.1})`);
+          grad.addColorStop(1, "rgba(252, 76, 0, 0)");
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, glowR * 6, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Core dot
+          ctx.fillStyle = `rgba(252, 76, 0, ${0.7 + pulseVal * 0.3})`;
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, node.r + mouseBoost, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          // Regular white node
+          ctx.fillStyle = `rgba(255, 255, 255, ${0.2 + mouseBoost * 0.3 + pulseVal * 0.1})`;
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, node.r + mouseBoost * 0.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Crosshair on glowing nodes
+        if (node.glow && node.r > 2) {
+          const cr = 6 + mouseBoost * 4;
+          ctx.strokeStyle = `rgba(252, 76, 0, ${0.15 + mouseBoost * 0.15})`;
+          ctx.lineWidth = 0.5;
+          ctx.beginPath();
+          ctx.moveTo(node.x - cr, node.y);
+          ctx.lineTo(node.x + cr, node.y);
+          ctx.moveTo(node.x, node.y - cr);
+          ctx.lineTo(node.x, node.y + cr);
+          ctx.stroke();
+        }
+      });
+
+      // Dimension lines (architectural style)
+      const dimY = h() * 0.92;
+      ctx.strokeStyle = "rgba(255, 165, 31, 0.06)";
+      ctx.lineWidth = 0.5;
+      ctx.setLineDash([2, 6]);
+      ctx.beginPath();
+      ctx.moveTo(w() * 0.1, dimY);
+      ctx.lineTo(w() * 0.9, dimY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Small ticks at ends
+      ctx.beginPath();
+      ctx.moveTo(w() * 0.1, dimY - 4);
+      ctx.lineTo(w() * 0.1, dimY + 4);
+      ctx.moveTo(w() * 0.9, dimY - 4);
+      ctx.lineTo(w() * 0.9, dimY + 4);
+      ctx.stroke();
 
       animId = requestAnimationFrame(draw);
     };
@@ -361,11 +429,11 @@ function ParticleMesh() {
       mouse.y = e.clientY - rect.top;
     };
     const handleLeave = () => { mouse.x = -9999; mouse.y = -9999; };
-
     const handleResize = () => {
       cancelAnimationFrame(animId);
       resize();
-      particles = buildSkylinePoints();
+      nodes = buildNodes();
+      edges = buildEdges(nodes);
       draw();
     };
 
@@ -385,22 +453,21 @@ function ParticleMesh() {
     <canvas
       ref={canvasRef}
       className="absolute inset-0 w-full h-full pointer-events-auto"
-      style={{ opacity: 0.7 }}
     />
   );
 }
 
-/* ─── 1. HERO — with particle mesh network ─── */
+/* ─── 1. HERO — with blueprint grid ─── */
 function Hero() {
   return (
     <section className="relative min-h-screen flex items-center bg-black pt-20 overflow-hidden grain">
-      {/* Particle mesh canvas */}
-      <ParticleMesh />
+      {/* Blueprint grid canvas */}
+      <BlueprintGrid />
 
       {/* Warm ambient glows */}
-      <div className="absolute top-20 right-10 w-80 h-80 bg-flame/5 rounded-full blur-[100px]" />
-      <div className="absolute bottom-40 left-10 w-64 h-64 bg-amber/5 rounded-full blur-[80px]" />
-      <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-ember/3 rounded-full blur-[120px]" />
+      <div className="absolute top-20 right-10 w-80 h-80 bg-flame/4 rounded-full blur-[120px]" />
+      <div className="absolute bottom-40 left-10 w-64 h-64 bg-amber/3 rounded-full blur-[100px]" />
+      <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-ember/3 rounded-full blur-[140px]" />
 
       <div className="max-w-7xl mx-auto px-6 py-20 fade-in relative z-10">
         {/* Logo + brand name */}
