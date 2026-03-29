@@ -1,6 +1,10 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import * as PricingCard from "@/components/ui/pricing-card";
+import { CheckCircle2, XCircleIcon, Building2, Briefcase, Shield } from "lucide-react";
 
 /* ─── Fade-in on scroll via Intersection Observer ─── */
 function useFadeIn() {
@@ -471,48 +475,6 @@ function Solution() {
 
 /* ─── 4b. COST COMPARISON — "LE VRAI COÛT D'UN RDV" ─── */
 function CostComparison() {
-  const cards = [
-    {
-      title: "En interne",
-      cost: "540–1 370€",
-      costColor: "#A32D2D",
-      subtitle: "par RDV qualifié",
-      items: [
-        "Salaire chargé commercial",
-        "Temps dirigeant non facturé",
-        "CRM & outils",
-        "Recrutement & formation",
-      ],
-      featured: false,
-    },
-    {
-      title: "Agence généraliste",
-      cost: "300–600€",
-      costColor: "#BD3900",
-      subtitle: "par RDV — sans garantie secteur",
-      items: [
-        "Templates génériques",
-        "Pas de connaissance bâtiment",
-        "No-show fréquents",
-        "Engagement long terme imposé",
-      ],
-      featured: false,
-    },
-    {
-      title: "Petravio",
-      cost: "3–7×",
-      costColor: "#FC4C00",
-      subtitle: "moins cher en moyenne",
-      items: [
-        "Spécialisé bâtiment & construction",
-        "Zéro charge sociale",
-        "Opérationnel en 7 jours",
-        "Sans recrutement",
-      ],
-      featured: true,
-    },
-  ];
-
   const stats = [
     { num: "87%", label: "de réduction moyenne vs. prospection interne" },
     { num: "7 jours", label: "pour être opérationnel — pas 3 mois de recrutement" },
@@ -520,8 +482,26 @@ function CostComparison() {
   ];
 
   return (
-    <section className="bg-[#0A0A0A] py-[100px] px-6 border-t border-flame/20">
-      <div className="max-w-7xl mx-auto">
+    <section className="relative bg-[#0A0A0A] py-[100px] px-6 border-t border-flame/20 overflow-hidden">
+      {/* Subtle dotted grid background */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage:
+            "radial-gradient(rgba(255,255,255,0.05) 0.8px, transparent 0.8px)",
+          backgroundSize: "14px 14px",
+          maskImage:
+            "radial-gradient(circle at 50% 10%, rgba(0,0,0,0.8), rgba(0,0,0,0.15) 50%, rgba(0,0,0,0) 75%)",
+        }}
+      />
+      {/* Radial spotlight */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-1/3 left-1/2 h-[80vmin] w-[80vmin] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(252,76,0,0.06),transparent_50%)] blur-[30px]"
+      />
+
+      <div className="max-w-7xl mx-auto relative z-10">
         <p className="text-amber font-sora font-semibold text-sm tracking-widest uppercase fade-in">
           Pourquoi Petravio
         </p>
@@ -536,49 +516,118 @@ function CostComparison() {
           Temps passé, salaires, outils, opportunités manquées — le vrai coût de la prospection interne est souvent invisible.
         </p>
 
-        {/* Cards */}
-        <div className="mt-16 grid md:grid-cols-3 gap-[1.5px] bg-[#222]">
-          {cards.map((card, i) => (
-            <div
-              key={i}
-              className={`fade-in bg-[#111] p-8 flex flex-col ${
-                card.featured ? "border border-flame" : "border border-[#222]"
-              } ${i === 2 ? "md:order-last order-last" : ""}`}
-              style={{ transitionDelay: `${i * 100}ms` }}
-            >
-              <h3 className="font-sora font-semibold text-sm tracking-widest uppercase text-white/70 mb-6">
-                {card.title}
-              </h3>
-              <p className="font-sora font-semibold text-4xl md:text-5xl" style={{ color: card.costColor }}>
-                {card.cost}
-              </p>
-              <p className="mt-2 text-white/50 text-sm font-sora">{card.subtitle}</p>
+        {/* Pricing Cards */}
+        <div className="mt-16 grid md:grid-cols-3 gap-6 items-start">
+          {/* Card 1 — En interne */}
+          <div className="fade-in" style={{ transitionDelay: "0ms" }}>
+            <PricingCard.Card className="max-w-none bg-transparent border-[#222] shadow-none">
+              <PricingCard.Header className="bg-[#111]/80 border-[#222]">
+                <PricingCard.Plan>
+                  <PricingCard.PlanName className="text-white/60">
+                    <Building2 aria-hidden="true" className="text-[#A32D2D]" />
+                    <span>En interne</span>
+                  </PricingCard.PlanName>
+                </PricingCard.Plan>
+                <PricingCard.Price>
+                  <PricingCard.MainPrice className="text-[#A32D2D]">540–1 370€</PricingCard.MainPrice>
+                </PricingCard.Price>
+                <PricingCard.Description className="text-white/40">par RDV qualifié</PricingCard.Description>
+              </PricingCard.Header>
+              <PricingCard.Body>
+                <PricingCard.List>
+                  {["Salaire chargé commercial", "Temps dirigeant non facturé", "CRM & outils", "Recrutement & formation"].map((item) => (
+                    <PricingCard.ListItem key={item} className="text-white/40">
+                      <span className="mt-0.5">
+                        <XCircleIcon className="h-4 w-4 text-[#A32D2D]" aria-hidden="true" />
+                      </span>
+                      <span>{item}</span>
+                    </PricingCard.ListItem>
+                  ))}
+                </PricingCard.List>
+              </PricingCard.Body>
+            </PricingCard.Card>
+          </div>
 
-              <ul className="mt-8 space-y-3 flex-1">
-                {card.items.map((item, j) => (
-                  <li key={j} className="flex items-start gap-2.5 text-sm leading-relaxed">
-                    {card.featured ? (
-                      <>
-                        <span className="mt-0.5 text-[#3B6D11] flex-shrink-0">✓</span>
-                        <span className="text-[#3B6D11]">{item}</span>
-                      </>
-                    ) : (
-                      <>
-                        <span className="mt-0.5 text-white/25 flex-shrink-0">·</span>
-                        <span className="text-white/40">{item}</span>
-                      </>
-                    )}
-                  </li>
-                ))}
-              </ul>
+          {/* Card 2 — Agence généraliste */}
+          <div className="fade-in" style={{ transitionDelay: "100ms" }}>
+            <PricingCard.Card className="max-w-none bg-transparent border-[#222] shadow-none">
+              <PricingCard.Header className="bg-[#111]/80 border-[#222]">
+                <PricingCard.Plan>
+                  <PricingCard.PlanName className="text-white/60">
+                    <Briefcase aria-hidden="true" className="text-ember" />
+                    <span>Agence généraliste</span>
+                  </PricingCard.PlanName>
+                </PricingCard.Plan>
+                <PricingCard.Price>
+                  <PricingCard.MainPrice className="text-ember">300–600€</PricingCard.MainPrice>
+                </PricingCard.Price>
+                <PricingCard.Description className="text-white/40">par RDV — sans garantie secteur</PricingCard.Description>
+              </PricingCard.Header>
+              <PricingCard.Body>
+                <PricingCard.List>
+                  {["Templates génériques", "Pas de connaissance bâtiment", "No-show fréquents", "Engagement long terme imposé"].map((item) => (
+                    <PricingCard.ListItem key={item} className="text-white/40">
+                      <span className="mt-0.5">
+                        <XCircleIcon className="h-4 w-4 text-ember" aria-hidden="true" />
+                      </span>
+                      <span>{item}</span>
+                    </PricingCard.ListItem>
+                  ))}
+                </PricingCard.List>
+              </PricingCard.Body>
+            </PricingCard.Card>
+          </div>
 
-              {card.featured && (
-                <p className="mt-8 pt-4 border-t border-flame/30 font-sora font-semibold text-xs tracking-widest uppercase text-flame">
+          {/* Card 3 — Petravio (featured) */}
+          <div className="fade-in" style={{ transitionDelay: "200ms" }}>
+            <PricingCard.Card className="max-w-none bg-transparent border-flame shadow-[0_0_40px_rgba(252,76,0,0.1)]">
+              <PricingCard.Header className="bg-[#111]/80 border-flame/30">
+                <PricingCard.Plan>
+                  <PricingCard.PlanName className="text-white/80">
+                    <Shield aria-hidden="true" className="text-flame" />
+                    <span className="font-semibold">Petravio</span>
+                  </PricingCard.PlanName>
+                  <PricingCard.Badge className="border-flame/40 text-flame">Recommandé</PricingCard.Badge>
+                </PricingCard.Plan>
+                <PricingCard.Price>
+                  <PricingCard.MainPrice className="text-flame">3–7×</PricingCard.MainPrice>
+                  <PricingCard.Period className="text-white/60">moins cher en moyenne</PricingCard.Period>
+                </PricingCard.Price>
+                <Button
+                  className={cn(
+                    "w-full font-sora font-semibold text-white",
+                    "bg-gradient-to-b from-flame to-ember shadow-[0_10px_25px_rgba(252,76,0,0.3)]",
+                    "hover:from-flame/90 hover:to-ember/90",
+                  )}
+                  onClick={() => {
+                    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                >
+                  Prendre un RDV
+                </Button>
+              </PricingCard.Header>
+              <PricingCard.Body>
+                <PricingCard.List>
+                  {[
+                    "Spécialisé bâtiment & construction",
+                    "Zéro charge sociale",
+                    "Opérationnel en 7 jours",
+                    "Sans recrutement",
+                  ].map((item) => (
+                    <PricingCard.ListItem key={item} className="text-green-400/80">
+                      <span className="mt-0.5">
+                        <CheckCircle2 className="h-4 w-4 text-green-500" aria-hidden="true" />
+                      </span>
+                      <span>{item}</span>
+                    </PricingCard.ListItem>
+                  ))}
+                </PricingCard.List>
+                <PricingCard.Separator className="text-flame/60">
                   En moyenne, une fraction du coût interne
-                </p>
-              )}
-            </div>
-          ))}
+                </PricingCard.Separator>
+              </PricingCard.Body>
+            </PricingCard.Card>
+          </div>
         </div>
 
         {/* Stats row */}
@@ -588,7 +637,7 @@ function CostComparison() {
               <p className="font-sora font-semibold text-[48px] leading-none text-flame">
                 {stat.num}
               </p>
-              <p className="mt-3 text-white/50 text-sm font-dm-sans max-w-[220px] mx-auto">
+              <p className="mt-3 text-white/50 text-sm font-dm max-w-[220px] mx-auto">
                 {stat.label}
               </p>
             </div>
