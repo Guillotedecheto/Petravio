@@ -405,24 +405,24 @@ function Problem() {
   ];
 
   return (
-    <section className="bg-white py-24 px-6">
+    <section className="bg-[#111] py-24 px-6">
       <div className="max-w-7xl mx-auto">
         <p className="text-flame font-sora font-semibold text-sm tracking-widest uppercase fade-in">
           Le problème
         </p>
-        <h2 className="mt-4 font-sora font-semibold text-3xl sm:text-4xl md:text-5xl text-black leading-tight max-w-3xl fade-in">
+        <h2 className="mt-4 font-sora font-semibold text-3xl sm:text-4xl md:text-5xl text-white leading-tight max-w-3xl fade-in">
           Vous êtes bons dans votre métier. Pas dans la prospection.
         </h2>
         <div className="mt-14 grid md:grid-cols-3 gap-8">
           {cards.map((card, i) => (
             <div
               key={i}
-              className="fade-in bg-white border border-gray-200 rounded-lg p-8 relative overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-flame/30 group"
+              className="fade-in bg-[#1A1A1A] border border-white/10 rounded-lg p-8 relative overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-flame/30 group"
             >
               <div className="absolute top-0 left-0 w-full h-1 bg-flame" />
               <div className="mb-4 group-hover:scale-110 transition-transform">{card.icon}</div>
-              <h3 className="font-sora font-semibold text-xl text-black">{card.title}</h3>
-              <p className="mt-3 text-gray-600 leading-relaxed">{card.desc}</p>
+              <h3 className="font-sora font-semibold text-xl text-white">{card.title}</h3>
+              <p className="mt-3 text-white/60 leading-relaxed">{card.desc}</p>
             </div>
           ))}
         </div>
@@ -727,18 +727,18 @@ function ValueProp() {
   ];
 
   return (
-    <section id="livraison" className="bg-white py-24 px-6">
+    <section id="livraison" className="bg-[#111] py-24 px-6">
       <div className="max-w-7xl mx-auto">
         <p className="text-flame font-sora font-semibold text-sm tracking-widest uppercase fade-in">
           Ce qu&apos;on livre
         </p>
-        <h2 className="mt-4 font-sora font-semibold text-3xl sm:text-4xl md:text-5xl text-black leading-tight max-w-3xl fade-in">
+        <h2 className="mt-4 font-sora font-semibold text-3xl sm:text-4xl md:text-5xl text-white leading-tight max-w-3xl fade-in">
           Un retainer mensuel. Des rendez-vous dans votre agenda.
         </h2>
 
         <div className="mt-14 grid lg:grid-cols-3 gap-8">
-          <div className="fade-in p-6 rounded-lg border border-transparent transition-all duration-300 hover:border-gray-200 hover:shadow-lg">
-            <h3 className="font-sora font-semibold text-lg text-black mb-6">Ce qui est inclus</h3>
+          <div className="fade-in p-6 rounded-lg border border-transparent transition-all duration-300 hover:border-white/10 hover:bg-white/[0.02]">
+            <h3 className="font-sora font-semibold text-lg text-white mb-6">Ce qui est inclus</h3>
             <ul className="space-y-4">
               {included.map((item, i) => (
                 <li key={i} className="flex items-start gap-3">
@@ -747,32 +747,32 @@ function ValueProp() {
                       <path d="M2 6l3 3 5-5" stroke="#FC4C00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </span>
-                  <span className="text-gray-700">{item}</span>
+                  <span className="text-white/70">{item}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="fade-in p-6 rounded-lg border border-transparent transition-all duration-300 hover:border-gray-200 hover:shadow-lg">
-            <h3 className="font-sora font-semibold text-lg text-black mb-6">
+          <div className="fade-in p-6 rounded-lg border border-transparent transition-all duration-300 hover:border-white/10 hover:bg-white/[0.02]">
+            <h3 className="font-sora font-semibold text-lg text-white mb-6">
               Ce qu&apos;on ne fait pas
             </h3>
             <ul className="space-y-4">
               {excluded.map((item, i) => (
                 <li key={i} className="flex items-start gap-3">
-                  <span className="mt-0.5 w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                  <span className="mt-0.5 w-5 h-5 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0">
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                      <path d="M3 3l6 6M9 3l-6 6" stroke="#999" strokeWidth="2" strokeLinecap="round" />
+                      <path d="M3 3l6 6M9 3l-6 6" stroke="#555" strokeWidth="2" strokeLinecap="round" />
                     </svg>
                   </span>
-                  <span className="text-gray-400">{item}</span>
+                  <span className="text-white/30">{item}</span>
                 </li>
               ))}
             </ul>
           </div>
 
           <div className="fade-in">
-            <div className="bg-black rounded-xl p-8 h-full flex flex-col justify-center transition-all duration-300 hover:shadow-2xl hover:shadow-flame/5 hover:-translate-y-1">
+            <div className="bg-[#0A0A0A] border border-white/10 rounded-xl p-8 h-full flex flex-col justify-center transition-all duration-300 hover:shadow-2xl hover:shadow-flame/5 hover:-translate-y-1 hover:border-flame/30">
               <h3 className="font-sora font-semibold text-2xl text-white">
                 Prêt à remplir votre agenda ?
               </h3>
