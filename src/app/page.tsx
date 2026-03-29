@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import * as PricingCard from "@/components/ui/pricing-card";
-import { CheckCircle2, XCircleIcon, Building2, Briefcase, Shield, Target, Send, CalendarCheck, Box, ArrowLeftRight, Wrench, Leaf, Crane, PlusCircle } from "lucide-react";
+import { CheckCircle2, XCircleIcon, Building2, Briefcase, Shield, Target, Send, CalendarCheck, Box, ArrowLeftRight, Wrench, Leaf, HardHat, PlusCircle } from "lucide-react";
 
 /* ─── Fade-in on scroll via Intersection Observer ─── */
 function useFadeIn() {
@@ -514,7 +514,7 @@ function ICP() {
     { icon: <ArrowLeftRight className="w-6 h-6 text-flame" />, title: "Négociants en matériaux", desc: "Identifiez les chantiers avant vos concurrents.", featured: false },
     { icon: <Wrench className="w-6 h-6 text-flame" />, title: "Artisans & entreprises 2nd œuvre", desc: "Accédez aux donneurs d'ordre qui ont des chantiers actifs.", featured: false },
     { icon: <Leaf className="w-6 h-6 text-flame" />, title: "Sociétés de rénovation énergétique", desc: "Des leads exclusifs — pas partagés avec 5 concurrents.", featured: false },
-    { icon: <Crane className="w-6 h-6 text-flame" />, title: "Loueurs de matériel BTP", desc: "Soyez présent avant le démarrage du chantier.", featured: false },
+    { icon: <HardHat className="w-6 h-6 text-flame" />, title: "Loueurs de matériel BTP", desc: "Soyez présent avant le démarrage du chantier.", featured: false },
     { icon: <PlusCircle className="w-6 h-6 text-flame" />, title: "Et bien d'autres...", desc: "Vous êtes dans le bâtiment et vous prospectez trop peu ? Parlons-en.", featured: true },
   ];
 
