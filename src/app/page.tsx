@@ -194,8 +194,8 @@ function Nav() {
   );
 }
 
-/* ─── Blueprint Grid Canvas ─── */
-function BlueprintGrid() {
+/* ─── Isometric City Canvas ─── */
+function IsometricCity() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -216,207 +216,209 @@ function BlueprintGrid() {
     };
     resize();
 
-    const w = () => canvas.offsetWidth;
-    const h = () => canvas.offsetHeight;
+    const W = () => canvas.offsetWidth;
+    const H = () => canvas.offsetHeight;
 
-    // Node types for glowing intersections
-    type Node = { x: number; y: number; r: number; glow: boolean; pulse: number; speed: number };
+    // Isometric projection helpers
+    const isoX = (x: number, y: number) => (x - y) * 0.866;
+    const isoY = (x: number, y: number, z: number) => (x + y) * 0.5 - z;
 
-    const buildNodes = (): Node[] => {
-      const W = w();
-      const H = h();
-      const nodes: Node[] = [];
+    type Block = {
+      gx: number; gy: number; w: number; d: number; h: number;
+      color: string; glow: boolean; delay: number;
+    };
 
-      // Floor plan structures — like architectural blueprints seen from above
-      // Main building footprint (right side)
-      const plans = [
-        // Large L-shaped building
-        [0.55, 0.15], [0.55, 0.55], [0.70, 0.55], [0.70, 0.35], [0.85, 0.35], [0.85, 0.15],
-        // Inner rooms
-        [0.60, 0.25], [0.65, 0.25], [0.60, 0.35], [0.65, 0.35], [0.60, 0.45], [0.65, 0.45],
-        [0.75, 0.25], [0.80, 0.25], [0.75, 0.15], [0.80, 0.15],
-        // Small building left
-        [0.05, 0.30], [0.05, 0.60], [0.20, 0.60], [0.20, 0.30],
-        [0.10, 0.40], [0.15, 0.40], [0.10, 0.50], [0.15, 0.50],
-        // Center structure
-        [0.30, 0.50], [0.30, 0.75], [0.50, 0.75], [0.50, 0.50],
-        [0.35, 0.58], [0.45, 0.58], [0.35, 0.67], [0.45, 0.67], [0.40, 0.62],
-        // Bottom strip — long narrow building
-        [0.10, 0.80], [0.90, 0.80], [0.90, 0.88], [0.10, 0.88],
-        [0.25, 0.80], [0.40, 0.80], [0.55, 0.80], [0.70, 0.80],
-        [0.25, 0.88], [0.40, 0.88], [0.55, 0.88], [0.70, 0.88],
-        // Scattered detail nodes
-        [0.25, 0.20], [0.35, 0.15], [0.42, 0.25], [0.48, 0.18],
-        [0.92, 0.55], [0.88, 0.65], [0.93, 0.72],
-        [0.08, 0.72], [0.15, 0.70], [0.22, 0.68],
+    const buildCity = (): Block[] => {
+      const blocks: Block[] = [];
+      // City grid — each block is a building
+      const layout = [
+        // Right cluster — tall buildings
+        { gx: 6, gy: 2, w: 2, d: 2, h: 7, glow: true },
+        { gx: 6, gy: 5, w: 2, d: 3, h: 4, glow: false },
+        { gx: 9, gy: 2, w: 1.5, d: 2, h: 5.5, glow: true },
+        { gx: 9, gy: 5, w: 2, d: 2, h: 3, glow: false },
+        { gx: 11, gy: 3, w: 1.5, d: 1.5, h: 6, glow: false },
+        { gx: 11, gy: 6, w: 2, d: 2, h: 2.5, glow: true },
+        // Center
+        { gx: 4, gy: 4, w: 1.5, d: 1.5, h: 3.5, glow: false },
+        { gx: 4, gy: 7, w: 2, d: 1.5, h: 2, glow: true },
+        // Left cluster
+        { gx: 0, gy: 3, w: 2, d: 2, h: 5, glow: false },
+        { gx: 0, gy: 6, w: 1.5, d: 2, h: 3, glow: true },
+        { gx: 2, gy: 5, w: 1.5, d: 1.5, h: 4, glow: false },
+        { gx: -1, gy: 8, w: 2, d: 1.5, h: 2, glow: false },
+        // Far buildings
+        { gx: 7, gy: 8, w: 3, d: 1, h: 1.5, glow: false },
+        { gx: 13, gy: 5, w: 1, d: 1, h: 8, glow: true },
+        { gx: 3, gy: 1, w: 1, d: 1, h: 3, glow: false },
+        // Small details
+        { gx: 5, gy: 0, w: 0.8, d: 0.8, h: 2, glow: false },
+        { gx: 8, gy: 8, w: 1, d: 1, h: 1, glow: false },
+        { gx: 12, gy: 1, w: 1.5, d: 1, h: 4, glow: false },
       ];
 
-      plans.forEach(([px, py]) => {
-        nodes.push({
-          x: px * W,
-          y: py * H,
-          r: Math.random() > 0.7 ? 2.5 : 1.5,
-          glow: Math.random() > 0.65,
-          pulse: Math.random() * Math.PI * 2,
-          speed: 0.5 + Math.random() * 1.5,
+      layout.forEach((b, i) => {
+        blocks.push({
+          ...b,
+          color: b.glow ? "#FC4C00" : "#ffffff",
+          delay: i * 0.3,
         });
       });
 
-      return nodes;
+      return blocks;
     };
 
-    // Lines connecting nodes to form blueprint walls
-    const buildEdges = (nodes: Node[]): [number, number][] => {
-      const edges: [number, number][] = [];
-      const maxDist = 180;
-      for (let i = 0; i < nodes.length; i++) {
-        // Connect to nearest neighbors within range
-        const distances: { j: number; d: number }[] = [];
-        for (let j = i + 1; j < nodes.length; j++) {
-          const dx = nodes[i].x - nodes[j].x;
-          const dy = nodes[i].y - nodes[j].y;
-          const d = Math.sqrt(dx * dx + dy * dy);
-          if (d < maxDist) {
-            distances.push({ j, d });
-          }
-        }
-        // Keep closest 3 connections per node for clean look
-        distances.sort((a, b) => a.d - b.d);
-        distances.slice(0, 3).forEach(({ j }) => edges.push([i, j]));
-      }
-      return edges;
-    };
+    const blocks = buildCity();
 
-    let nodes = buildNodes();
-    let edges = buildEdges(nodes);
+    // Sort by depth for correct draw order
+    blocks.sort((a, b) => (a.gx + a.gy) - (b.gx + b.gy));
 
     const draw = () => {
-      time += 0.016;
-      ctx.clearRect(0, 0, w(), h());
+      time += 0.01;
+      ctx.clearRect(0, 0, W(), H());
 
-      // Draw subtle grid background
-      const gridSize = 40;
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.018)";
+      const scale = Math.min(W(), H()) * 0.045;
+      const offsetX = W() * 0.5;
+      const offsetY = H() * 0.55;
+
+      // Isometric grid lines (ground plane)
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.02)";
       ctx.lineWidth = 0.5;
-      for (let x = 0; x < w(); x += gridSize) {
+      for (let i = -4; i <= 16; i++) {
+        const x1 = isoX(i, -4) * scale + offsetX;
+        const y1 = isoY(i, -4, 0) * scale + offsetY;
+        const x2 = isoX(i, 12) * scale + offsetX;
+        const y2 = isoY(i, 12, 0) * scale + offsetY;
         ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, h());
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
         ctx.stroke();
       }
-      for (let y = 0; y < h(); y += gridSize) {
+      for (let j = -4; j <= 12; j++) {
+        const x1 = isoX(-4, j) * scale + offsetX;
+        const y1 = isoY(-4, j, 0) * scale + offsetY;
+        const x2 = isoX(16, j) * scale + offsetX;
+        const y2 = isoY(16, j, 0) * scale + offsetY;
         ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(w(), y);
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
         ctx.stroke();
       }
 
-      // Mouse proximity glow radius
-      const mouseRadius = 200;
+      const mouseRadius = 250;
 
-      // Draw edges (blueprint walls)
-      edges.forEach(([i, j]) => {
-        const a = nodes[i];
-        const b = nodes[j];
-        const mx = (a.x + b.x) / 2;
-        const my = (a.y + b.y) / 2;
-        const distToMouse = Math.sqrt((mx - mouse.x) ** 2 + (my - mouse.y) ** 2);
-        const mouseBoost = distToMouse < mouseRadius ? (1 - distToMouse / mouseRadius) * 0.15 : 0;
-
-        const isGlowEdge = a.glow || b.glow;
-
-        if (isGlowEdge) {
-          ctx.strokeStyle = `rgba(252, 76, 0, ${0.08 + mouseBoost})`;
-          ctx.lineWidth = 0.8;
-        } else {
-          ctx.strokeStyle = `rgba(255, 255, 255, ${0.05 + mouseBoost})`;
-          ctx.lineWidth = 0.5;
-        }
-
-        ctx.beginPath();
-        ctx.moveTo(a.x, a.y);
-        ctx.lineTo(b.x, b.y);
-        ctx.stroke();
-
-        // Animated dashes on some edges
-        if (isGlowEdge) {
-          ctx.setLineDash([4, 8]);
-          ctx.lineDashOffset = -time * 20;
-          ctx.strokeStyle = `rgba(252, 76, 0, ${0.12 + mouseBoost})`;
-          ctx.lineWidth = 0.5;
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.stroke();
-          ctx.setLineDash([]);
-        }
-      });
-
-      // Draw nodes
-      nodes.forEach((node) => {
-        const distToMouse = Math.sqrt((node.x - mouse.x) ** 2 + (node.y - mouse.y) ** 2);
+      // Draw buildings
+      blocks.forEach((b) => {
+        const cx = (b.gx + b.w / 2) * scale;
+        const cy = (b.gy + b.d / 2) * scale;
+        const screenCx = isoX(b.gx + b.w / 2, b.gy + b.d / 2) * scale + offsetX;
+        const screenCy = isoY(b.gx + b.w / 2, b.gy + b.d / 2, b.h / 2) * scale + offsetY;
+        const distToMouse = Math.sqrt((screenCx - mouse.x) ** 2 + (screenCy - mouse.y) ** 2);
         const mouseBoost = distToMouse < mouseRadius ? (1 - distToMouse / mouseRadius) : 0;
-        const pulseVal = Math.sin(time * node.speed + node.pulse) * 0.5 + 0.5;
 
-        if (node.glow) {
-          // Glowing orange node with pulse
-          const glowR = node.r + pulseVal * 2 + mouseBoost * 3;
+        const baseAlpha = b.glow ? 0.12 : 0.06;
+        const alpha = baseAlpha + mouseBoost * 0.12;
 
-          // Outer glow
-          const grad = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, glowR * 6);
-          grad.addColorStop(0, `rgba(252, 76, 0, ${0.15 + mouseBoost * 0.2})`);
-          grad.addColorStop(0.5, `rgba(252, 76, 0, ${0.04 + mouseBoost * 0.1})`);
+        // 8 corners of the box
+        const corners = [
+          // Bottom face
+          [b.gx, b.gy, 0],
+          [b.gx + b.w, b.gy, 0],
+          [b.gx + b.w, b.gy + b.d, 0],
+          [b.gx, b.gy + b.d, 0],
+          // Top face
+          [b.gx, b.gy, b.h],
+          [b.gx + b.w, b.gy, b.h],
+          [b.gx + b.w, b.gy + b.d, b.h],
+          [b.gx, b.gy + b.d, b.h],
+        ].map(([x, y, z]) => ({
+          sx: isoX(x, y) * scale + offsetX,
+          sy: isoY(x, y, z) * scale + offsetY,
+        }));
+
+        const c = corners;
+        const col = b.glow ? `rgba(252, 76, 0, ${alpha})` : `rgba(255, 255, 255, ${alpha})`;
+        const fillCol = b.glow ? `rgba(252, 76, 0, ${alpha * 0.3})` : `rgba(255, 255, 255, ${alpha * 0.15})`;
+
+        // Top face (filled)
+        ctx.fillStyle = b.glow
+          ? `rgba(252, 76, 0, ${(alpha * 0.4) + Math.sin(time * 2 + b.delay) * 0.02})`
+          : `rgba(255, 255, 255, ${alpha * 0.08})`;
+        ctx.beginPath();
+        ctx.moveTo(c[4].sx, c[4].sy);
+        ctx.lineTo(c[5].sx, c[5].sy);
+        ctx.lineTo(c[6].sx, c[6].sy);
+        ctx.lineTo(c[7].sx, c[7].sy);
+        ctx.closePath();
+        ctx.fill();
+
+        // Left face
+        ctx.fillStyle = b.glow
+          ? `rgba(189, 57, 0, ${alpha * 0.35})`
+          : `rgba(255, 255, 255, ${alpha * 0.04})`;
+        ctx.beginPath();
+        ctx.moveTo(c[0].sx, c[0].sy);
+        ctx.lineTo(c[4].sx, c[4].sy);
+        ctx.lineTo(c[7].sx, c[7].sy);
+        ctx.lineTo(c[3].sx, c[3].sy);
+        ctx.closePath();
+        ctx.fill();
+
+        // Right face
+        ctx.fillStyle = b.glow
+          ? `rgba(252, 76, 0, ${alpha * 0.2})`
+          : `rgba(255, 255, 255, ${alpha * 0.02})`;
+        ctx.beginPath();
+        ctx.moveTo(c[1].sx, c[1].sy);
+        ctx.lineTo(c[5].sx, c[5].sy);
+        ctx.lineTo(c[6].sx, c[6].sy);
+        ctx.lineTo(c[2].sx, c[2].sy);
+        ctx.closePath();
+        ctx.fill();
+
+        // Wireframe edges
+        ctx.strokeStyle = col;
+        ctx.lineWidth = b.glow ? 0.8 : 0.5;
+
+        // Top face outline
+        ctx.beginPath();
+        ctx.moveTo(c[4].sx, c[4].sy);
+        ctx.lineTo(c[5].sx, c[5].sy);
+        ctx.lineTo(c[6].sx, c[6].sy);
+        ctx.lineTo(c[7].sx, c[7].sy);
+        ctx.closePath();
+        ctx.stroke();
+
+        // Vertical edges
+        [[0, 4], [1, 5], [2, 6], [3, 7]].forEach(([a, b2]) => {
+          ctx.beginPath();
+          ctx.moveTo(c[a].sx, c[a].sy);
+          ctx.lineTo(c[b2].sx, c[b2].sy);
+          ctx.stroke();
+        });
+
+        // Bottom face outline
+        ctx.strokeStyle = b.glow ? `rgba(252, 76, 0, ${alpha * 0.5})` : `rgba(255, 255, 255, ${alpha * 0.5})`;
+        ctx.beginPath();
+        ctx.moveTo(c[0].sx, c[0].sy);
+        ctx.lineTo(c[1].sx, c[1].sy);
+        ctx.lineTo(c[2].sx, c[2].sy);
+        ctx.lineTo(c[3].sx, c[3].sy);
+        ctx.closePath();
+        ctx.stroke();
+
+        // Glow halo for highlighted buildings
+        if (b.glow) {
+          const pulse = Math.sin(time * 1.5 + b.delay) * 0.5 + 0.5;
+          const grad = ctx.createRadialGradient(screenCx, screenCy, 0, screenCx, screenCy, 60 + pulse * 20);
+          grad.addColorStop(0, `rgba(252, 76, 0, ${0.06 + mouseBoost * 0.08})`);
           grad.addColorStop(1, "rgba(252, 76, 0, 0)");
           ctx.fillStyle = grad;
           ctx.beginPath();
-          ctx.arc(node.x, node.y, glowR * 6, 0, Math.PI * 2);
+          ctx.arc(screenCx, screenCy, 60 + pulse * 20, 0, Math.PI * 2);
           ctx.fill();
-
-          // Core dot
-          ctx.fillStyle = `rgba(252, 76, 0, ${0.7 + pulseVal * 0.3})`;
-          ctx.beginPath();
-          ctx.arc(node.x, node.y, node.r + mouseBoost, 0, Math.PI * 2);
-          ctx.fill();
-        } else {
-          // Regular white node
-          ctx.fillStyle = `rgba(255, 255, 255, ${0.2 + mouseBoost * 0.3 + pulseVal * 0.1})`;
-          ctx.beginPath();
-          ctx.arc(node.x, node.y, node.r + mouseBoost * 0.5, 0, Math.PI * 2);
-          ctx.fill();
-        }
-
-        // Crosshair on glowing nodes
-        if (node.glow && node.r > 2) {
-          const cr = 6 + mouseBoost * 4;
-          ctx.strokeStyle = `rgba(252, 76, 0, ${0.15 + mouseBoost * 0.15})`;
-          ctx.lineWidth = 0.5;
-          ctx.beginPath();
-          ctx.moveTo(node.x - cr, node.y);
-          ctx.lineTo(node.x + cr, node.y);
-          ctx.moveTo(node.x, node.y - cr);
-          ctx.lineTo(node.x, node.y + cr);
-          ctx.stroke();
         }
       });
-
-      // Dimension lines (architectural style)
-      const dimY = h() * 0.92;
-      ctx.strokeStyle = "rgba(255, 165, 31, 0.06)";
-      ctx.lineWidth = 0.5;
-      ctx.setLineDash([2, 6]);
-      ctx.beginPath();
-      ctx.moveTo(w() * 0.1, dimY);
-      ctx.lineTo(w() * 0.9, dimY);
-      ctx.stroke();
-      ctx.setLineDash([]);
-
-      // Small ticks at ends
-      ctx.beginPath();
-      ctx.moveTo(w() * 0.1, dimY - 4);
-      ctx.lineTo(w() * 0.1, dimY + 4);
-      ctx.moveTo(w() * 0.9, dimY - 4);
-      ctx.lineTo(w() * 0.9, dimY + 4);
-      ctx.stroke();
 
       animId = requestAnimationFrame(draw);
     };
@@ -432,8 +434,6 @@ function BlueprintGrid() {
     const handleResize = () => {
       cancelAnimationFrame(animId);
       resize();
-      nodes = buildNodes();
-      edges = buildEdges(nodes);
       draw();
     };
 
@@ -457,12 +457,12 @@ function BlueprintGrid() {
   );
 }
 
-/* ─── 1. HERO — with blueprint grid ─── */
+/* ─── 1. HERO — with isometric city ─── */
 function Hero() {
   return (
     <section className="relative min-h-screen flex items-center bg-black pt-20 overflow-hidden grain">
-      {/* Blueprint grid canvas */}
-      <BlueprintGrid />
+      {/* Isometric city canvas */}
+      <IsometricCity />
 
       {/* Warm ambient glows */}
       <div className="absolute top-20 right-10 w-80 h-80 bg-flame/4 rounded-full blur-[120px]" />
