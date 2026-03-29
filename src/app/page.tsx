@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
-/* ─── Fade-in on scroll via Intersection Observer ─── */
-function useFadeIn() {
+/* ─── Enhanced Intersection Observer with multiple animation types ─── */
+function useAnimations() {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -15,23 +15,62 @@ function useFadeIn() {
           }
         });
       },
-      { threshold: 0.15 }
+      { threshold: 0.1 }
     );
     const el = ref.current;
     if (el) {
-      el.querySelectorAll(".fade-in").forEach((child) => observer.observe(child));
+      el.querySelectorAll(".fade-in, .fade-in-left, .fade-in-right, .fade-in-scale").forEach((child) =>
+        observer.observe(child)
+      );
     }
     return () => observer.disconnect();
   }, []);
   return ref;
 }
 
-/* ─── SVG Icons (geometric, no images) ─── */
+/* ─── Animated Counter Hook ─── */
+function useCounter(end: number, duration: number = 1500, suffix: string = "") {
+  const [count, setCount] = useState(0);
+  const [started, setStarted] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !started) {
+          setStarted(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.5 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [started]);
+
+  useEffect(() => {
+    if (!started) return;
+    let start = 0;
+    const step = end / (duration / 16);
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= end) {
+        setCount(end);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(start));
+      }
+    }, 16);
+    return () => clearInterval(timer);
+  }, [started, end, duration]);
+
+  return { ref, count: `${count}${suffix}` };
+}
+
+/* ─── SVG Icons ─── */
 const LogoIcon = ({ size = 36 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
-    {/* Large triangle - dark ember */}
     <polygon points="35,10 5,85 65,85" fill="#BD3900" />
-    {/* Small triangle - light amber/peach, overlapping */}
     <polygon points="62,40 45,85 80,85" fill="#FFA51F" opacity="0.75" />
   </svg>
 );
@@ -59,7 +98,6 @@ const CalendarIcon = () => (
   </svg>
 );
 
-/* Cube icon — Fabricants de matériaux */
 const CubeIcon = () => (
   <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FC4C00" strokeWidth="1.5">
     <path d="M18 4L4 12v12l14 8 14-8V12L18 4z" />
@@ -67,7 +105,6 @@ const CubeIcon = () => (
   </svg>
 );
 
-/* Arrows icon — Négociants en matériaux */
 const ArrowsIcon = () => (
   <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FC4C00" strokeWidth="1.5">
     <path d="M8 18h20M22 12l6 6-6 6" />
@@ -75,7 +112,6 @@ const ArrowsIcon = () => (
   </svg>
 );
 
-/* Wrench icon — Artisans 2nd œuvre */
 const WrenchIcon = () => (
   <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FC4C00" strokeWidth="1.5">
     <path d="M22 8a8 8 0 01-6.5 12.5L8 28l-2-2 7.5-7.5A8 8 0 0122 8z" />
@@ -83,7 +119,6 @@ const WrenchIcon = () => (
   </svg>
 );
 
-/* Leaf/Energy icon — Rénovation énergétique */
 const LeafIcon = () => (
   <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FC4C00" strokeWidth="1.5">
     <path d="M8 30C8 30 8 16 18 8c10 8 10 22 10 22" />
@@ -93,7 +128,6 @@ const LeafIcon = () => (
   </svg>
 );
 
-/* Crane icon — Loueurs de matériel BTP */
 const CraneIcon = () => (
   <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FC4C00" strokeWidth="1.5">
     <line x1="12" y1="6" x2="12" y2="32" />
@@ -105,7 +139,6 @@ const CraneIcon = () => (
   </svg>
 );
 
-/* Plus icon — Et bien d'autres */
 const PlusIcon = () => (
   <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FC4C00" strokeWidth="1.5">
     <circle cx="18" cy="18" r="14" />
@@ -113,28 +146,45 @@ const PlusIcon = () => (
   </svg>
 );
 
-/* ─── NAV ─── */
+/* ─── NAV — Sticky shrink on scroll ─── */
 function Nav() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/5">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+    <nav
+      className={`fixed top-0 left-0 w-full z-50 backdrop-blur-xl border-b transition-all duration-500 ${
+        scrolled
+          ? "bg-black/90 border-white/8 py-2"
+          : "bg-black/40 border-transparent py-4"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-6">
         <a href="#" className="flex items-center">
-          <LogoIcon size={44} />
+          <LogoIcon size={scrolled ? 34 : 44} />
         </a>
 
         <div className="hidden md:flex items-center gap-8 text-sm text-white/70">
-          <a href="#approche" className="hover:text-white transition-colors">
+          <a href="#approche" className="hover:text-white transition-colors relative group">
             Notre approche
+            <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-flame transition-all duration-300 group-hover:w-full" />
           </a>
-          <a href="#livraison" className="hover:text-white transition-colors">
+          <a href="#livraison" className="hover:text-white transition-colors relative group">
             Ce qu&apos;on livre
+            <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-flame transition-all duration-300 group-hover:w-full" />
           </a>
-          <a href="#contact" className="hover:text-white transition-colors">
+          <a href="#contact" className="hover:text-white transition-colors relative group">
             Contact
+            <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-flame transition-all duration-300 group-hover:w-full" />
           </a>
           <a
             href="#contact"
-            className="bg-flame text-white px-5 py-2 rounded-md font-sora font-semibold text-sm hover:bg-flame/90 transition-colors"
+            className="bg-flame text-white px-5 py-2 rounded-lg font-sora font-semibold text-sm hover:bg-flame/90 transition-all hover:shadow-lg hover:shadow-flame/20"
           >
             Prendre un RDV
           </a>
@@ -144,13 +194,22 @@ function Nav() {
   );
 }
 
-/* ─── 1. HERO ─── */
+/* ─── 1. HERO — with parallax wireframe ─── */
 function Hero() {
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <section className="relative min-h-screen flex items-center bg-black pt-20 overflow-hidden">
-      {/* Architectural wireframe background */}
+    <section className="relative min-h-screen flex items-center bg-black pt-20 overflow-hidden grain">
+      {/* Architectural wireframe background — parallax */}
       <svg
-        className="absolute inset-0 w-full h-full pointer-events-none"
+        className="absolute inset-0 w-full h-full pointer-events-none transition-transform will-change-transform"
+        style={{ transform: `translateY(${scrollY * 0.15}px)` }}
         viewBox="0 0 1440 900"
         fill="none"
         preserveAspectRatio="xMidYMid slice"
@@ -167,7 +226,7 @@ function Hero() {
           </linearGradient>
         </defs>
 
-        {/* ── Perspective lines from vanishing point ── */}
+        {/* Perspective lines from vanishing point */}
         <line x1="850" y1="250" x2="1440" y2="0" stroke="white" strokeOpacity="0.07" strokeWidth="0.5" />
         <line x1="850" y1="250" x2="1440" y2="120" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" />
         <line x1="850" y1="250" x2="1440" y2="300" stroke="white" strokeOpacity="0.07" strokeWidth="0.5" />
@@ -175,9 +234,8 @@ function Hero() {
         <line x1="850" y1="250" x2="1350" y2="700" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" />
         <line x1="850" y1="250" x2="1100" y2="900" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" />
 
-        {/* ── Main tower — tall, right side ── */}
+        {/* Main tower */}
         <rect x="1020" y="80" width="140" height="820" stroke="white" strokeOpacity="0.1" strokeWidth="0.7" fill="url(#buildingGlow)" />
-        {/* Windows grid */}
         <rect x="1035" y="110" width="32" height="48" stroke="white" strokeOpacity="0.07" strokeWidth="0.5" fill="none" />
         <rect x="1075" y="110" width="32" height="48" stroke="white" strokeOpacity="0.07" strokeWidth="0.5" fill="none" />
         <rect x="1115" y="110" width="32" height="48" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
@@ -192,51 +250,36 @@ function Hero() {
         <rect x="1115" y="305" width="32" height="48" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
         <rect x="1035" y="370" width="32" height="48" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
         <rect x="1075" y="370" width="32" height="48" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
-        <rect x="1035" y="435" width="32" height="48" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" fill="none" />
-        <rect x="1075" y="435" width="32" height="48" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" fill="none" />
-        {/* Rooftop accent */}
         <line x1="1020" y1="80" x2="1090" y2="50" stroke="#FC4C00" strokeOpacity="0.12" strokeWidth="0.7" />
         <line x1="1160" y1="80" x2="1090" y2="50" stroke="#FC4C00" strokeOpacity="0.12" strokeWidth="0.7" />
 
-        {/* ── Second building — medium ── */}
+        {/* Second building */}
         <rect x="1190" y="280" width="110" height="620" stroke="white" strokeOpacity="0.08" strokeWidth="0.7" fill="none" />
         <rect x="1203" y="305" width="28" height="40" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
         <rect x="1240" y="305" width="28" height="40" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
-        <rect x="1275" y="305" width="16" height="40" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
         <rect x="1203" y="360" width="28" height="40" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
         <rect x="1240" y="360" width="28" height="40" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
         <rect x="1203" y="415" width="28" height="40" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
         <rect x="1240" y="415" width="28" height="40" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
-        <rect x="1203" y="470" width="28" height="40" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
-        <rect x="1240" y="470" width="28" height="40" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
 
-        {/* ── Small building — far right ── */}
+        {/* Small building far right */}
         <rect x="1330" y="450" width="80" height="450" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
         <rect x="1342" y="475" width="22" height="32" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
         <rect x="1372" y="475" width="22" height="32" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
-        <rect x="1342" y="520" width="22" height="32" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
-        <rect x="1372" y="520" width="22" height="32" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
 
-        {/* ── Crane ── */}
+        {/* Crane */}
         <line x1="980" y1="60" x2="980" y2="900" stroke="white" strokeOpacity="0.08" strokeWidth="0.7" />
         <line x1="940" y1="80" x2="1080" y2="80" stroke="white" strokeOpacity="0.07" strokeWidth="0.7" />
         <line x1="980" y1="80" x2="940" y2="160" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" />
-        <line x1="980" y1="80" x2="960" y2="160" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" />
-        {/* Crane cable */}
         <line x1="1060" y1="80" x2="1060" y2="180" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" />
-        {/* Crane top marker */}
         <rect x="974" y="55" width="12" height="12" stroke="#FC4C00" strokeOpacity="0.15" strokeWidth="0.5" fill="none" />
 
-        {/* ── Ground line ── */}
+        {/* Ground lines */}
         <line x1="800" y1="900" x2="1440" y2="900" stroke="url(#groundFade)" strokeWidth="1" />
-        <line x1="850" y1="898" x2="1440" y2="898" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" />
-
-        {/* ── Horizontal floor lines through buildings ── */}
         <line x1="970" y1="550" x2="1420" y2="550" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" strokeDasharray="8 12" />
         <line x1="970" y1="700" x2="1420" y2="700" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" strokeDasharray="8 12" />
 
-        {/* ── Left side — building cluster ── */}
-        {/* Tall narrow building */}
+        {/* Left side buildings */}
         <rect x="30" y="200" width="80" height="700" stroke="white" strokeOpacity="0.08" strokeWidth="0.7" fill="none" />
         <rect x="42" y="230" width="20" height="30" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
         <rect x="72" y="230" width="20" height="30" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" fill="none" />
@@ -246,11 +289,6 @@ function Hero() {
         <rect x="72" y="320" width="20" height="30" stroke="white" strokeOpacity="0.045" strokeWidth="0.5" fill="none" />
         <rect x="42" y="365" width="20" height="30" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
         <rect x="72" y="365" width="20" height="30" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
-        <rect x="42" y="410" width="20" height="30" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
-        <rect x="72" y="410" width="20" height="30" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
-        <rect x="42" y="455" width="20" height="30" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" fill="none" />
-        <rect x="72" y="455" width="20" height="30" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" fill="none" />
-        {/* Rooftop accent left building */}
         <line x1="30" y1="200" x2="70" y2="175" stroke="#FC4C00" strokeOpacity="0.1" strokeWidth="0.7" />
         <line x1="110" y1="200" x2="70" y2="175" stroke="#FC4C00" strokeOpacity="0.1" strokeWidth="0.7" />
 
@@ -260,102 +298,79 @@ function Hero() {
         <rect x="190" y="405" width="25" height="35" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
         <rect x="155" y="455" width="25" height="35" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
         <rect x="190" y="455" width="25" height="35" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" fill="none" />
-        <rect x="155" y="505" width="25" height="35" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
-        <rect x="190" y="505" width="25" height="35" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
-        <rect x="155" y="555" width="25" height="35" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" fill="none" />
-        <rect x="190" y="555" width="25" height="35" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" fill="none" />
 
         {/* Small building far left */}
         <rect x="-20" y="500" width="60" height="400" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" fill="none" />
-        <rect x="-8" y="525" width="16" height="24" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
-        <rect x="16" y="525" width="16" height="24" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" fill="none" />
-        <rect x="-8" y="562" width="16" height="24" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" fill="none" />
-        <rect x="16" y="562" width="16" height="24" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" fill="none" />
 
-        {/* Crane left side */}
+        {/* Crane left */}
         <line x1="270" y1="280" x2="270" y2="900" stroke="white" strokeOpacity="0.06" strokeWidth="0.5" />
         <line x1="240" y1="300" x2="330" y2="300" stroke="white" strokeOpacity="0.05" strokeWidth="0.5" />
         <line x1="270" y1="300" x2="245" y2="370" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" />
-        <line x1="310" y1="300" x2="310" y2="380" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" />
         <rect x="264" y="274" width="12" height="12" stroke="#FC4C00" strokeOpacity="0.12" strokeWidth="0.5" fill="none" />
 
-        {/* Perspective lines from left vanishing point */}
+        {/* Perspective lines left */}
         <line x1="350" y1="350" x2="0" y2="100" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" />
         <line x1="350" y1="350" x2="0" y2="250" stroke="white" strokeOpacity="0.035" strokeWidth="0.5" />
         <line x1="350" y1="350" x2="0" y2="450" stroke="white" strokeOpacity="0.04" strokeWidth="0.5" />
-        <line x1="350" y1="350" x2="0" y2="650" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" />
-        <line x1="350" y1="350" x2="100" y2="900" stroke="white" strokeOpacity="0.03" strokeWidth="0.5" />
-
-        {/* Horizontal dashed floor lines left */}
-        <line x1="0" y1="600" x2="300" y2="600" stroke="white" strokeOpacity="0.025" strokeWidth="0.5" strokeDasharray="8 12" />
-        <line x1="0" y1="750" x2="250" y2="750" stroke="white" strokeOpacity="0.025" strokeWidth="0.5" strokeDasharray="8 12" />
 
         {/* Ground line left */}
         <line x1="0" y1="900" x2="350" y2="900" stroke="white" strokeOpacity="0.06" strokeWidth="0.7" />
       </svg>
 
       {/* Warm ambient glows */}
-      <div className="absolute top-20 right-10 w-64 h-64 bg-flame/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-40 left-10 w-48 h-48 bg-amber/5 rounded-full blur-3xl" />
+      <div className="absolute top-20 right-10 w-80 h-80 bg-flame/5 rounded-full blur-[100px]" />
+      <div className="absolute bottom-40 left-10 w-64 h-64 bg-amber/5 rounded-full blur-[80px]" />
       <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-ember/3 rounded-full blur-[120px]" />
 
       <div className="max-w-7xl mx-auto px-6 py-20 fade-in relative z-10">
-        {/* Big logo + brand name block */}
+        {/* Logo + brand name */}
         <div className="flex items-center gap-6 mb-8">
           <LogoIcon size={100} />
-          <div className="flex flex-col">
-            <span className="font-sora text-6xl sm:text-7xl md:text-8xl text-white tracking-tight">
-              <span className="font-semibold">petra</span>
-              <span className="font-light">vio</span>
-            </span>
-          </div>
+          <span className="font-sora text-6xl sm:text-7xl md:text-8xl tracking-tight">
+            <span className="font-semibold gradient-text-white">petra</span>
+            <span className="font-light gradient-text">vio</span>
+          </span>
         </div>
 
-        <h1 className="font-sora font-semibold text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white leading-tight max-w-4xl">
+        <h1 className="font-sora font-semibold text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight max-w-4xl gradient-text-white">
           Vos prochains chantiers commencent ici.
         </h1>
-        <p className="mt-6 text-lg sm:text-xl text-white/70 font-sora font-light max-w-2xl leading-relaxed">
+        <p className="mt-6 text-lg sm:text-xl text-white/60 font-sora font-light max-w-2xl leading-relaxed">
           Petravio identifie les décideurs dans le secteur du bâtiment, les contacte en votre nom,
           et vous livre des rendez-vous qualifiés.
         </p>
         <div className="mt-10 flex flex-wrap gap-4">
           <a
             href="#contact"
-            className="bg-flame text-white px-8 py-3.5 rounded-md font-sora font-semibold hover:bg-flame/90 transition-colors"
+            className="bg-flame text-white px-8 py-3.5 rounded-lg font-sora font-semibold hover:bg-flame/90 transition-all hover:shadow-lg hover:shadow-flame/25 hover:-translate-y-0.5"
           >
             Prendre un RDV
           </a>
           <a
             href="#approche"
-            className="border border-white/30 text-white px-8 py-3.5 rounded-md font-sora font-semibold hover:border-white/60 transition-colors"
+            className="border border-white/20 text-white px-8 py-3.5 rounded-lg font-sora font-semibold hover:border-white/40 hover:bg-white/5 transition-all"
           >
             Voir comment ça marche
           </a>
         </div>
 
-        <p className="mt-14 font-sora text-xs tracking-[0.3em] uppercase text-white/30">
+        <p className="mt-14 font-sora text-xs tracking-[0.3em] uppercase text-white/25">
           Real Estate Lead Generation Agency
         </p>
       </div>
 
-      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-b from-transparent to-dark-gray" />
+      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-b from-transparent to-[#111]" />
     </section>
   );
 }
 
 /* ─── 2. SOCIAL PROOF MARQUEE ─── */
 function SocialProof() {
-  const items = [
-    "Architectes",
-    "Entrepreneurs généraux",
-    "Artisans 2nd œuvre",
-    "Négociants matériaux",
-    "Promoteurs",
-  ];
+  const items = ["Architectes", "Entrepreneurs généraux", "Artisans 2nd œuvre", "Négociants matériaux", "Promoteurs"];
   const repeated = [...items, ...items, ...items, ...items];
 
   return (
-    <section className="bg-dark-gray py-5 overflow-hidden border-y border-white/5">
+    <section className="bg-[#111] py-5 overflow-hidden border-y border-white/5">
       <div className="marquee flex whitespace-nowrap gap-12 text-white/40 text-sm font-sora font-light">
         {repeated.map((item, i) => (
           <span key={i} className="flex items-center gap-3">
@@ -405,24 +420,28 @@ function Problem() {
   ];
 
   return (
-    <section className="bg-[#111] py-24 px-6">
-      <div className="max-w-7xl mx-auto">
+    <section className="bg-[#111] py-24 px-6 relative grain">
+      <div className="max-w-7xl mx-auto relative z-10">
         <p className="text-flame font-sora font-semibold text-sm tracking-widest uppercase fade-in">
           Le problème
         </p>
         <h2 className="mt-4 font-sora font-semibold text-3xl sm:text-4xl md:text-5xl text-white leading-tight max-w-3xl fade-in">
-          Vous êtes bons dans votre métier. Pas dans la prospection.
+          Vous êtes bons dans votre métier.{" "}
+          <span className="gradient-text">Pas dans la prospection.</span>
         </h2>
-        <div className="mt-14 grid md:grid-cols-3 gap-8">
+        <div className="mt-14 grid md:grid-cols-3 gap-6">
           {cards.map((card, i) => (
             <div
               key={i}
-              className="fade-in bg-[#1A1A1A] border border-white/10 rounded-lg p-8 relative overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-flame/30 group"
+              className="fade-in relative rounded-xl p-8 overflow-hidden glass-card transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-flame/5 group"
+              style={{ transitionDelay: `${i * 100}ms` }}
             >
-              <div className="absolute top-0 left-0 w-full h-1 bg-flame" />
-              <div className="mb-4 group-hover:scale-110 transition-transform">{card.icon}</div>
-              <h3 className="font-sora font-semibold text-xl text-white">{card.title}</h3>
-              <p className="mt-3 text-white/60 leading-relaxed">{card.desc}</p>
+              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-flame to-amber" />
+              <div className="relative z-10">
+                <div className="mb-5 group-hover:scale-110 transition-transform duration-300">{card.icon}</div>
+                <h3 className="font-sora font-semibold text-xl text-white">{card.title}</h3>
+                <p className="mt-3 text-white/50 leading-relaxed">{card.desc}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -455,30 +474,43 @@ function Solution() {
   ];
 
   return (
-    <section id="approche" className="bg-black py-24 px-6">
-      <div className="max-w-7xl mx-auto">
+    <section id="approche" className="bg-black py-24 px-6 relative grain">
+      {/* Dot grid background */}
+      <div className="absolute inset-0 dot-grid opacity-50" style={{
+        maskImage: "radial-gradient(ellipse at center, rgba(0,0,0,0.6) 0%, transparent 70%)",
+        WebkitMaskImage: "radial-gradient(ellipse at center, rgba(0,0,0,0.6) 0%, transparent 70%)",
+      }} />
+
+      <div className="max-w-7xl mx-auto relative z-10">
         <p className="text-amber font-sora font-semibold text-sm tracking-widest uppercase fade-in">
           Comment ça marche
         </p>
         <h2 className="mt-4 font-sora font-semibold text-3xl sm:text-4xl md:text-5xl text-white leading-tight max-w-3xl fade-in">
-          On remplit votre agenda. Vous fermez les contrats.
+          On remplit votre agenda.{" "}
+          <span className="gradient-text">Vous fermez les contrats.</span>
         </h2>
 
         <div className="mt-16 relative">
-          <div className="hidden md:block absolute top-[60px] left-[16.6%] right-[16.6%] step-line" />
+          <div className="hidden md:block absolute top-[60px] left-[16.6%] right-[16.6%] h-[2px] bg-gradient-to-r from-ember via-flame to-amber opacity-30" />
 
-          <div className="grid md:grid-cols-3 gap-12">
+          <div className="grid md:grid-cols-3 gap-8">
             {steps.map((step, i) => (
-              <div key={i} className="fade-in text-center md:text-left group">
-                <div className="flex flex-col items-center md:items-start gap-4 p-6 rounded-lg border border-transparent transition-all duration-300 hover:border-white/10 hover:bg-white/[0.02]">
-                  <div className="relative group-hover:scale-110 transition-transform">
-                    {step.icon}
-                    <span className="absolute -top-2 -right-3 font-sora font-semibold text-flame text-xs">
-                      {step.num}
-                    </span>
+              <div
+                key={i}
+                className="fade-in-scale group"
+                style={{ transitionDelay: `${i * 150}ms` }}
+              >
+                <div className="relative rounded-xl p-6 glass-card transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-flame/5">
+                  <div className="relative z-10 flex flex-col items-center md:items-start gap-4">
+                    <div className="relative group-hover:scale-110 transition-transform duration-300">
+                      {step.icon}
+                      <span className="absolute -top-2 -right-3 font-sora font-semibold text-xs gradient-text">
+                        {step.num}
+                      </span>
+                    </div>
+                    <h3 className="font-sora font-semibold text-2xl text-white">{step.title}</h3>
+                    <p className="text-white/50 leading-relaxed max-w-sm">{step.desc}</p>
                   </div>
-                  <h3 className="font-sora font-semibold text-2xl text-white">{step.title}</h3>
-                  <p className="text-white/60 leading-relaxed max-w-sm">{step.desc}</p>
                 </div>
               </div>
             ))}
@@ -489,7 +521,7 @@ function Solution() {
   );
 }
 
-/* ─── 4b. COST COMPARISON — "LE VRAI COÛT D'UN RDV" ─── */
+/* ─── 4b. COST COMPARISON ─── */
 function CostComparison() {
   const cards = [
     {
@@ -497,12 +529,7 @@ function CostComparison() {
       cost: "540–1 370€",
       costColor: "#A32D2D",
       subtitle: "par RDV qualifié",
-      items: [
-        "Salaire chargé commercial",
-        "Temps dirigeant non facturé",
-        "CRM & outils",
-        "Recrutement & formation",
-      ],
+      items: ["Salaire chargé commercial", "Temps dirigeant non facturé", "CRM & outils", "Recrutement & formation"],
       featured: false,
     },
     {
@@ -510,12 +537,7 @@ function CostComparison() {
       cost: "300–600€",
       costColor: "#BD3900",
       subtitle: "par RDV — sans garantie secteur",
-      items: [
-        "Templates génériques",
-        "Pas de connaissance bâtiment",
-        "No-show fréquents",
-        "Engagement long terme imposé",
-      ],
+      items: ["Templates génériques", "Pas de connaissance bâtiment", "No-show fréquents", "Engagement long terme imposé"],
       featured: false,
     },
     {
@@ -523,103 +545,104 @@ function CostComparison() {
       cost: "3–7×",
       costColor: "#FC4C00",
       subtitle: "moins cher en moyenne",
-      items: [
-        "Spécialisé bâtiment & construction",
-        "Zéro charge sociale",
-        "Opérationnel en 7 jours",
-        "Sans recrutement",
-      ],
+      items: ["Spécialisé bâtiment & construction", "Zéro charge sociale", "Opérationnel en 7 jours", "Sans recrutement"],
       featured: true,
     },
   ];
 
-  const stats = [
-    { num: "87%", label: "de réduction moyenne vs. prospection interne" },
-    { num: "7 jours", label: "pour être opérationnel — pas 3 mois de recrutement" },
-    { num: "0€", label: "de charges sociales, CRM ou outils à votre charge" },
-  ];
+  const stat1 = useCounter(87, 1200, "%");
+  const stat2 = useCounter(7, 800, "");
+  const stat3 = useCounter(0, 400, "€");
 
   return (
-    <section className="bg-[#0A0A0A] py-[100px] px-6 border-t border-flame/20">
-      <div className="max-w-7xl mx-auto">
+    <section className="bg-[#0A0A0A] py-[100px] px-6 border-t border-flame/20 relative grain">
+      <div className="max-w-7xl mx-auto relative z-10">
         <p className="text-amber font-sora font-semibold text-sm tracking-widest uppercase fade-in">
           Pourquoi Petravio
         </p>
         <h2 className="mt-4 font-sora font-semibold text-3xl sm:text-4xl md:text-5xl text-white leading-tight max-w-4xl fade-in">
-          Chaque RDV que vous cherchez seul vous coûte entre 540€ et 1 370€.
+          Chaque RDV que vous cherchez seul vous coûte{" "}
+          <span className="gradient-text">entre 540€ et 1 370€.</span>
           <br className="hidden sm:block" />
-          <span className="text-white/60">
-            {" "}La plupart des dirigeants ne le savent pas.
-          </span>
+          <span className="text-white/50"> La plupart des dirigeants ne le savent pas.</span>
         </h2>
-        <p className="mt-6 text-white/50 font-sora font-light text-lg max-w-2xl leading-relaxed fade-in">
+        <p className="mt-6 text-white/40 font-sora font-light text-lg max-w-2xl leading-relaxed fade-in">
           Temps passé, salaires, outils, opportunités manquées — le vrai coût de la prospection interne est souvent invisible.
         </p>
 
-        {/* Cards */}
-        <div className="mt-16 grid md:grid-cols-3 gap-[1.5px] bg-[#222]">
+        <div className="mt-16 grid md:grid-cols-3 gap-6">
           {cards.map((card, i) => (
             <div
               key={i}
-              className={`fade-in bg-[#111] p-8 flex flex-col transition-all duration-300 hover:bg-[#161616] hover:-translate-y-1 hover:shadow-xl ${
-                card.featured ? "border border-flame hover:shadow-flame/10" : "border border-[#222] hover:border-white/20"
+              className={`fade-in-scale relative rounded-xl p-8 flex flex-col transition-all duration-300 hover:-translate-y-2 ${
+                card.featured
+                  ? "glass-card glow-border border border-flame/50"
+                  : "glass-card hover:shadow-xl"
               } ${i === 2 ? "md:order-last order-last" : ""}`}
               style={{ transitionDelay: `${i * 100}ms` }}
             >
-              <h3 className="font-sora font-semibold text-sm tracking-widest uppercase text-white/70 mb-6">
-                {card.title}
-              </h3>
-              <p className="font-sora font-semibold text-4xl md:text-5xl" style={{ color: card.costColor }}>
-                {card.cost}
-              </p>
-              <p className="mt-2 text-white/50 text-sm font-sora">{card.subtitle}</p>
-
-              <ul className="mt-8 space-y-3 flex-1">
-                {card.items.map((item, j) => (
-                  <li key={j} className="flex items-start gap-2.5 text-sm leading-relaxed">
-                    {card.featured ? (
-                      <>
-                        <span className="mt-0.5 text-[#3B6D11] flex-shrink-0">✓</span>
-                        <span className="text-[#3B6D11]">{item}</span>
-                      </>
-                    ) : (
-                      <>
-                        <span className="mt-0.5 text-white/25 flex-shrink-0">·</span>
-                        <span className="text-white/40">{item}</span>
-                      </>
-                    )}
-                  </li>
-                ))}
-              </ul>
-
-              {card.featured && (
-                <p className="mt-8 pt-4 border-t border-flame/30 font-sora font-semibold text-xs tracking-widest uppercase text-flame text-center">
-                  Une fraction du coût interne
+              <div className="relative z-10 flex flex-col h-full">
+                <h3 className="font-sora font-semibold text-sm tracking-widest uppercase text-white/60 mb-6">
+                  {card.title}
+                  {card.featured && (
+                    <span className="ml-3 text-[10px] px-2 py-0.5 rounded-full border border-flame/40 text-flame">
+                      Recommandé
+                    </span>
+                  )}
+                </h3>
+                <p className="font-sora font-bold text-4xl md:text-5xl" style={{ color: card.costColor }}>
+                  {card.cost}
                 </p>
-              )}
+                <p className="mt-2 text-white/40 text-sm font-sora">{card.subtitle}</p>
+
+                <ul className="mt-8 space-y-3 flex-1">
+                  {card.items.map((item, j) => (
+                    <li key={j} className="flex items-start gap-2.5 text-sm leading-relaxed">
+                      {card.featured ? (
+                        <>
+                          <span className="mt-0.5 text-[#3B6D11] flex-shrink-0">✓</span>
+                          <span className="text-[#3B6D11]">{item}</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="mt-0.5 text-white/20 flex-shrink-0">·</span>
+                          <span className="text-white/35">{item}</span>
+                        </>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+
+                {card.featured && (
+                  <p className="mt-8 pt-4 border-t border-flame/20 font-sora font-semibold text-xs tracking-widest uppercase text-flame text-center">
+                    Une fraction du coût interne
+                  </p>
+                )}
+              </div>
             </div>
           ))}
         </div>
 
-        {/* Stats row */}
-        <div className="mt-16 fade-in flex flex-col md:flex-row items-center justify-center gap-8 md:gap-0 md:divide-x md:divide-white/10">
-          {stats.map((stat, i) => (
-            <div key={i} className="px-8 md:px-12 text-center">
-              <p className="font-sora font-semibold text-[48px] leading-none text-flame">
-                {stat.num}
-              </p>
-              <p className="mt-3 text-white/50 text-sm font-dm-sans max-w-[220px] mx-auto">
-                {stat.label}
-              </p>
-            </div>
-          ))}
+        {/* Animated Stats row */}
+        <div className="mt-20 fade-in flex flex-col md:flex-row items-center justify-center gap-8 md:gap-0 md:divide-x md:divide-white/10">
+          <div ref={stat1.ref} className="px-8 md:px-12 text-center">
+            <p className="font-sora font-bold text-[52px] leading-none gradient-text">{stat1.count}</p>
+            <p className="mt-3 text-white/40 text-sm font-dm max-w-[220px] mx-auto">de réduction moyenne vs. prospection interne</p>
+          </div>
+          <div ref={stat2.ref} className="px-8 md:px-12 text-center">
+            <p className="font-sora font-bold text-[52px] leading-none gradient-text">{stat2.count} jours</p>
+            <p className="mt-3 text-white/40 text-sm font-dm max-w-[220px] mx-auto">pour être opérationnel — pas 3 mois de recrutement</p>
+          </div>
+          <div ref={stat3.ref} className="px-8 md:px-12 text-center">
+            <p className="font-sora font-bold text-[52px] leading-none gradient-text">{stat3.count}</p>
+            <p className="mt-3 text-white/40 text-sm font-dm max-w-[220px] mx-auto">de charges sociales, CRM ou outils à votre charge</p>
+          </div>
         </div>
 
-        {/* CTA */}
         <div className="mt-14 text-center fade-in">
           <a
             href="#livraison"
-            className="inline-block border border-white/30 text-white px-8 py-3.5 rounded-md font-sora font-semibold text-sm hover:border-white/60 transition-colors"
+            className="inline-block border border-white/20 text-white px-8 py-3.5 rounded-lg font-sora font-semibold text-sm hover:border-white/40 hover:bg-white/5 transition-all"
           >
             Voir nos offres
           </a>
@@ -632,76 +655,44 @@ function CostComparison() {
 /* ─── 5. ICP SECTION ─── */
 function ICP() {
   const profiles = [
-    {
-      icon: <CubeIcon />,
-      title: "Fabricants de matériaux",
-      desc: "Développez votre réseau de distributeurs et prescripteurs.",
-      featured: false,
-    },
-    {
-      icon: <ArrowsIcon />,
-      title: "Négociants en matériaux",
-      desc: "Identifiez les chantiers avant vos concurrents.",
-      featured: false,
-    },
-    {
-      icon: <WrenchIcon />,
-      title: "Artisans & entreprises 2nd œuvre",
-      desc: "Accédez aux donneurs d\u0027ordre qui ont des chantiers actifs.",
-      featured: false,
-    },
-    {
-      icon: <LeafIcon />,
-      title: "Sociétés de rénovation énergétique",
-      desc: "Des leads exclusifs — pas partagés avec 5 concurrents.",
-      featured: false,
-    },
-    {
-      icon: <CraneIcon />,
-      title: "Loueurs de matériel BTP",
-      desc: "Soyez présent avant le démarrage du chantier.",
-      featured: false,
-    },
-    {
-      icon: <PlusIcon />,
-      title: "Et bien d\u0027autres...",
-      desc: "Vous êtes dans le bâtiment et vous prospectez trop peu ? Parlons-en.",
-      featured: true,
-    },
+    { icon: <CubeIcon />, title: "Fabricants de matériaux", desc: "Développez votre réseau de distributeurs et prescripteurs.", featured: false },
+    { icon: <ArrowsIcon />, title: "Négociants en matériaux", desc: "Identifiez les chantiers avant vos concurrents.", featured: false },
+    { icon: <WrenchIcon />, title: "Artisans & entreprises 2nd œuvre", desc: "Accédez aux donneurs d\u0027ordre qui ont des chantiers actifs.", featured: false },
+    { icon: <LeafIcon />, title: "Sociétés de rénovation énergétique", desc: "Des leads exclusifs — pas partagés avec 5 concurrents.", featured: false },
+    { icon: <CraneIcon />, title: "Loueurs de matériel BTP", desc: "Soyez présent avant le démarrage du chantier.", featured: false },
+    { icon: <PlusIcon />, title: "Et bien d\u0027autres...", desc: "Vous êtes dans le bâtiment et vous prospectez trop peu ? Parlons-en.", featured: true },
   ];
 
   return (
-    <section className="bg-dark py-24 px-6">
-      <div className="max-w-7xl mx-auto">
+    <section className="bg-dark py-24 px-6 relative grain">
+      <div className="max-w-7xl mx-auto relative z-10">
         <p className="text-amber font-sora font-semibold text-sm tracking-widest uppercase fade-in">
           Pour qui
         </p>
         <h2 className="mt-4 font-sora font-semibold text-3xl sm:text-4xl md:text-5xl text-white leading-tight max-w-3xl fade-in">
-          Spécialisé secteur du bâtiment &amp; de la construction.
+          Spécialisé secteur du bâtiment{" "}
+          <span className="gradient-text">&amp; de la construction.</span>
         </h2>
 
         <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {profiles.map((p, i) => (
             <div
               key={i}
-              className={`fade-in bg-dark-gray rounded-lg p-6 transition-colors group ${
-                p.featured
-                  ? "border border-flame hover:border-flame"
-                  : "border border-white/10 hover:border-flame"
+              className={`fade-in-scale relative rounded-xl p-6 glass-card transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-flame/5 group ${
+                p.featured ? "border border-flame/50 glow-border" : ""
               }`}
               style={{ transitionDelay: `${i * 80}ms` }}
             >
-              <div className="mb-4 group-hover:scale-110 transition-transform">{p.icon}</div>
-              <h3 className="font-sora font-semibold text-lg text-white">{p.title}</h3>
-              <p className="mt-2 text-white/50 text-sm leading-relaxed">{p.desc}</p>
-              {p.featured && (
-                <a
-                  href="#contact"
-                  className="mt-4 inline-block text-flame font-sora font-semibold text-sm hover:text-flame/80 transition-colors"
-                >
-                  Parlons-en →
-                </a>
-              )}
+              <div className="relative z-10">
+                <div className="mb-4 group-hover:scale-110 transition-transform duration-300">{p.icon}</div>
+                <h3 className="font-sora font-semibold text-lg text-white">{p.title}</h3>
+                <p className="mt-2 text-white/45 text-sm leading-relaxed">{p.desc}</p>
+                {p.featured && (
+                  <a href="#contact" className="mt-4 inline-block text-flame font-sora font-semibold text-sm hover:text-amber transition-colors">
+                    Parlons-en →
+                  </a>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -710,7 +701,7 @@ function ICP() {
   );
 }
 
-/* ─── 6. VALUE PROPOSITION ─── */
+/* ─── 6. VALUE PROPOSITION — Bento Grid ─── */
 function ValueProp() {
   const included = [
     "Identification des prospects ICP",
@@ -727,61 +718,70 @@ function ValueProp() {
   ];
 
   return (
-    <section id="livraison" className="bg-[#111] py-24 px-6">
-      <div className="max-w-7xl mx-auto">
+    <section id="livraison" className="bg-[#111] py-24 px-6 relative grain">
+      <div className="max-w-7xl mx-auto relative z-10">
         <p className="text-flame font-sora font-semibold text-sm tracking-widest uppercase fade-in">
           Ce qu&apos;on livre
         </p>
         <h2 className="mt-4 font-sora font-semibold text-3xl sm:text-4xl md:text-5xl text-white leading-tight max-w-3xl fade-in">
-          Un retainer mensuel. Des rendez-vous dans votre agenda.
+          Un retainer mensuel.{" "}
+          <span className="gradient-text">Des rendez-vous dans votre agenda.</span>
         </h2>
 
-        <div className="mt-14 grid lg:grid-cols-3 gap-8">
-          <div className="fade-in p-6 rounded-lg border border-transparent transition-all duration-300 hover:border-white/10 hover:bg-white/[0.02]">
-            <h3 className="font-sora font-semibold text-lg text-white mb-6">Ce qui est inclus</h3>
-            <ul className="space-y-4">
-              {included.map((item, i) => (
-                <li key={i} className="flex items-start gap-3">
-                  <span className="mt-0.5 w-5 h-5 rounded-full bg-flame/10 flex items-center justify-center flex-shrink-0">
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                      <path d="M2 6l3 3 5-5" stroke="#FC4C00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </span>
-                  <span className="text-white/70">{item}</span>
-                </li>
-              ))}
-            </ul>
+        {/* Bento grid layout */}
+        <div className="mt-14 grid lg:grid-cols-12 gap-4">
+          {/* Included — large card */}
+          <div className="fade-in-left lg:col-span-5 relative rounded-xl p-8 glass-card transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-flame/5">
+            <div className="relative z-10">
+              <h3 className="font-sora font-semibold text-lg text-white mb-6">Ce qui est inclus</h3>
+              <ul className="space-y-4">
+                {included.map((item, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <span className="mt-0.5 w-5 h-5 rounded-full bg-flame/10 flex items-center justify-center flex-shrink-0">
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M2 6l3 3 5-5" stroke="#FC4C00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </span>
+                    <span className="text-white/70">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
-          <div className="fade-in p-6 rounded-lg border border-transparent transition-all duration-300 hover:border-white/10 hover:bg-white/[0.02]">
-            <h3 className="font-sora font-semibold text-lg text-white mb-6">
-              Ce qu&apos;on ne fait pas
-            </h3>
-            <ul className="space-y-4">
-              {excluded.map((item, i) => (
-                <li key={i} className="flex items-start gap-3">
-                  <span className="mt-0.5 w-5 h-5 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0">
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                      <path d="M3 3l6 6M9 3l-6 6" stroke="#555" strokeWidth="2" strokeLinecap="round" />
-                    </svg>
-                  </span>
-                  <span className="text-white/30">{item}</span>
-                </li>
-              ))}
-            </ul>
+          {/* Excluded — medium card */}
+          <div className="fade-in lg:col-span-4 relative rounded-xl p-8 glass-card transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+            <div className="relative z-10">
+              <h3 className="font-sora font-semibold text-lg text-white mb-6">Ce qu&apos;on ne fait pas</h3>
+              <ul className="space-y-4">
+                {excluded.map((item, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <span className="mt-0.5 w-5 h-5 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0">
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M3 3l6 6M9 3l-6 6" stroke="#555" strokeWidth="2" strokeLinecap="round" />
+                      </svg>
+                    </span>
+                    <span className="text-white/30">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
-          <div className="fade-in">
-            <div className="bg-[#0A0A0A] border border-white/10 rounded-xl p-8 h-full flex flex-col justify-center transition-all duration-300 hover:shadow-2xl hover:shadow-flame/5 hover:-translate-y-1 hover:border-flame/30">
-              <h3 className="font-sora font-semibold text-2xl text-white">
+          {/* CTA card */}
+          <div className="fade-in-right lg:col-span-3 relative rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-flame/10 group">
+            <div className="absolute inset-0 bg-gradient-to-br from-flame/20 to-ember/20" />
+            <div className="absolute inset-[1px] rounded-xl bg-[#0A0A0A]" />
+            <div className="relative z-10 p-8 h-full flex flex-col justify-center">
+              <h3 className="font-sora font-semibold text-xl text-white">
                 Prêt à remplir votre agenda ?
               </h3>
-              <p className="mt-4 text-white/60 leading-relaxed">
+              <p className="mt-4 text-white/50 leading-relaxed text-sm">
                 Prenons 20 minutes pour voir si Petravio est fait pour vous.
               </p>
               <a
                 href="#contact"
-                className="mt-8 inline-block bg-flame text-white px-6 py-3 rounded-md font-sora font-semibold text-center hover:bg-flame/90 transition-colors"
+                className="mt-8 inline-block bg-flame text-white px-6 py-3 rounded-lg font-sora font-semibold text-center text-sm hover:bg-flame/90 transition-all hover:shadow-lg hover:shadow-flame/25"
               >
                 Réserver un appel découverte
               </a>
@@ -796,48 +796,44 @@ function ValueProp() {
 /* ─── 7. FOOTER ─── */
 function Footer() {
   return (
-    <footer id="contact" className="bg-black border-t border-white/5">
-      <div className="max-w-7xl mx-auto px-6 py-20 text-center fade-in">
+    <footer id="contact" className="bg-black border-t border-white/5 relative grain">
+      <div className="max-w-7xl mx-auto px-6 py-20 text-center fade-in relative z-10">
         <p className="text-flame font-sora font-semibold text-sm tracking-widest uppercase">
           Contact
         </p>
-        <h2 className="mt-4 font-sora font-semibold text-3xl sm:text-4xl text-white">
+        <h2 className="mt-4 font-sora font-semibold text-3xl sm:text-4xl gradient-text-white">
           Vos prochains chantiers commencent ici.
         </h2>
-        <p className="mt-4 text-white/60 max-w-lg mx-auto">
+        <p className="mt-4 text-white/50 max-w-lg mx-auto">
           Réservez un appel découverte de 20 minutes. On vous montrera exactement comment
           Petravio peut remplir votre pipeline.
         </p>
         <a
           href="mailto:contact@petravio.com"
-          className="mt-8 inline-block bg-flame text-white px-10 py-4 rounded-md font-sora font-semibold text-lg hover:bg-flame/90 transition-colors"
+          className="mt-8 inline-block bg-flame text-white px-10 py-4 rounded-lg font-sora font-semibold text-lg hover:bg-flame/90 transition-all hover:shadow-xl hover:shadow-flame/25 hover:-translate-y-0.5"
         >
           Prendre un RDV
         </a>
       </div>
 
-      <div className="border-t border-white/5">
+      <div className="border-t border-white/5 relative z-10">
         <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <LogoIcon />
-            <span className="font-sora text-lg text-white/70">
-              <span className="font-semibold">petra</span>
-              <span className="font-light">vio</span>
+            <span className="font-sora text-lg">
+              <span className="font-semibold text-white/70">petra</span>
+              <span className="font-light text-flame/70">vio</span>
             </span>
-            <span className="text-white/30 text-sm ml-2">— Prospection B2B pour le bâtiment</span>
+            <span className="text-white/25 text-sm ml-2">— Prospection B2B pour le bâtiment</span>
           </div>
-          <div className="flex items-center gap-6 text-sm text-white/40">
-            <a href="mailto:contact@petravio.com" className="hover:text-white/70 transition-colors">
+          <div className="flex items-center gap-6 text-sm text-white/35">
+            <a href="mailto:contact@petravio.com" className="hover:text-white/60 transition-colors">
               contact@petravio.com
             </a>
-            <a href="#" className="hover:text-white/70 transition-colors">
-              Mentions légales
-            </a>
-            <a href="#" className="hover:text-white/70 transition-colors">
-              RGPD
-            </a>
+            <a href="#" className="hover:text-white/60 transition-colors">Mentions légales</a>
+            <a href="#" className="hover:text-white/60 transition-colors">RGPD</a>
           </div>
-          <span className="text-white/20 text-xs">© 2025 Petravio</span>
+          <span className="text-white/15 text-xs">© 2025 Petravio</span>
         </div>
       </div>
     </footer>
@@ -846,7 +842,7 @@ function Footer() {
 
 /* ─── MAIN PAGE ─── */
 export default function Home() {
-  const pageRef = useFadeIn();
+  const pageRef = useAnimations();
 
   return (
     <div ref={pageRef}>

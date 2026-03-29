@@ -2,32 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* TeX Gyre Termes — elegant serif for brand name */
-@font-face {
-  font-family: 'TeX Gyre Termes';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('https://cdn.jsdelivr.net/gh/ArtifexSoftware/urw-base35-fonts@master/fonts/TeXGyreTermes-Regular.woff2') format('woff2'),
-       url('https://cdn.jsdelivr.net/gh/ArtifexSoftware/urw-base35-fonts@master/fonts/TeXGyreTermes-Regular.woff') format('woff');
-}
-@font-face {
-  font-family: 'TeX Gyre Termes';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('https://cdn.jsdelivr.net/gh/ArtifexSoftware/urw-base35-fonts@master/fonts/TeXGyreTermes-Bold.woff2') format('woff2'),
-       url('https://cdn.jsdelivr.net/gh/ArtifexSoftware/urw-base35-fonts@master/fonts/TeXGyreTermes-Bold.woff') format('woff');
-}
-@font-face {
-  font-family: 'TeX Gyre Termes';
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-  src: url('https://cdn.jsdelivr.net/gh/ArtifexSoftware/urw-base35-fonts@master/fonts/TeXGyreTermes-Italic.woff2') format('woff2'),
-       url('https://cdn.jsdelivr.net/gh/ArtifexSoftware/urw-base35-fonts@master/fonts/TeXGyreTermes-Italic.woff') format('woff');
-}
-
 /* Smooth scroll */
 html {
   scroll-behavior: smooth;
@@ -35,7 +9,7 @@ html {
 
 /* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
   background: #000;
@@ -44,19 +18,65 @@ html {
   background: #333;
   border-radius: 4px;
 }
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
 
-/* Fade-in animation for Intersection Observer */
+/* ─── Noise grain texture overlay ─── */
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
+}
+
+/* ─── Fade-in animations with variants ─── */
 .fade-in {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .fade-in.visible {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* Marquee animation */
+.fade-in-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fade-in-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.fade-in-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fade-in-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.fade-in-scale {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fade-in-scale.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ─── Marquee animation ─── */
 @keyframes marquee {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
@@ -65,8 +85,73 @@ html {
   animation: marquee 30s linear infinite;
 }
 
-/* Step connecting line gradient */
+/* ─── Step connecting line gradient ─── */
 .step-line {
   background: linear-gradient(90deg, #BD3900, #FFA51F);
   height: 2px;
+}
+
+/* ─── Gradient text utility ─── */
+.gradient-text {
+  background: linear-gradient(135deg, #FC4C00 0%, #FFA51F 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-white {
+  background: linear-gradient(180deg, #FFFFFF 0%, rgba(255,255,255,0.6) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Glowing border animation ─── */
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(252, 76, 0, 0.15), 0 0 40px rgba(252, 76, 0, 0.05); }
+  50% { box-shadow: 0 0 30px rgba(252, 76, 0, 0.25), 0 0 60px rgba(252, 76, 0, 0.1); }
+}
+.glow-border {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+/* ─── Dot grid background ─── */
+.dot-grid {
+  background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* ─── Animated counter ─── */
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Sticky nav shrink ─── */
+.nav-scrolled {
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+  background: rgba(0, 0, 0, 0.9) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ─── Card glass effect ─── */
+.glass-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
