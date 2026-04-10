@@ -183,10 +183,10 @@ function Nav() {
             <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-flame transition-all duration-300 group-hover:w-full" />
           </a>
           <a
-            href="#contact"
+            href="mailto:contact@petravio.com?subject=Demande%20d%27audit%20gratuit"
             className="bg-flame text-white px-5 py-2 rounded-lg font-sora font-semibold text-sm hover:bg-flame/90 transition-all hover:shadow-lg hover:shadow-flame/20"
           >
-            Prendre un RDV
+            Audit gratuit
           </a>
         </div>
       </div>
@@ -194,318 +194,71 @@ function Nav() {
   );
 }
 
-/* ─── Isometric City Canvas ─── */
-function IsometricCity() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animId: number;
-    let time = 0;
-    const mouse = { x: -9999, y: -9999 };
-
-    const dpr = window.devicePixelRatio || 1;
-    const resize = () => {
-      canvas.width = canvas.offsetWidth * dpr;
-      canvas.height = canvas.offsetHeight * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
-    resize();
-
-    const W = () => canvas.offsetWidth;
-    const H = () => canvas.offsetHeight;
-
-    // Isometric projection helpers
-    const isoX = (x: number, y: number) => (x - y) * 0.866;
-    const isoY = (x: number, y: number, z: number) => (x + y) * 0.5 - z;
-
-    type Block = {
-      gx: number; gy: number; w: number; d: number; h: number;
-      color: string; glow: boolean; delay: number;
-    };
-
-    const buildCity = (): Block[] => {
-      const blocks: Block[] = [];
-      // City grid — each block is a building
-      const layout = [
-        // Right cluster — tall buildings
-        { gx: 6, gy: 2, w: 2, d: 2, h: 7, glow: true },
-        { gx: 6, gy: 5, w: 2, d: 3, h: 4, glow: false },
-        { gx: 9, gy: 2, w: 1.5, d: 2, h: 5.5, glow: true },
-        { gx: 9, gy: 5, w: 2, d: 2, h: 3, glow: false },
-        { gx: 11, gy: 3, w: 1.5, d: 1.5, h: 6, glow: false },
-        { gx: 11, gy: 6, w: 2, d: 2, h: 2.5, glow: true },
-        // Center
-        { gx: 4, gy: 4, w: 1.5, d: 1.5, h: 3.5, glow: false },
-        { gx: 4, gy: 7, w: 2, d: 1.5, h: 2, glow: true },
-        // Left cluster
-        { gx: 0, gy: 3, w: 2, d: 2, h: 5, glow: false },
-        { gx: 0, gy: 6, w: 1.5, d: 2, h: 3, glow: true },
-        { gx: 2, gy: 5, w: 1.5, d: 1.5, h: 4, glow: false },
-        { gx: -1, gy: 8, w: 2, d: 1.5, h: 2, glow: false },
-        // Far buildings
-        { gx: 7, gy: 8, w: 3, d: 1, h: 1.5, glow: false },
-        { gx: 13, gy: 5, w: 1, d: 1, h: 8, glow: true },
-        { gx: 3, gy: 1, w: 1, d: 1, h: 3, glow: false },
-        // Small details
-        { gx: 5, gy: 0, w: 0.8, d: 0.8, h: 2, glow: false },
-        { gx: 8, gy: 8, w: 1, d: 1, h: 1, glow: false },
-        { gx: 12, gy: 1, w: 1.5, d: 1, h: 4, glow: false },
-      ];
-
-      layout.forEach((b, i) => {
-        blocks.push({
-          ...b,
-          color: b.glow ? "#FC4C00" : "#ffffff",
-          delay: i * 0.3,
-        });
-      });
-
-      return blocks;
-    };
-
-    const blocks = buildCity();
-
-    // Sort by depth for correct draw order
-    blocks.sort((a, b) => (a.gx + a.gy) - (b.gx + b.gy));
-
-    const draw = () => {
-      time += 0.01;
-      ctx.clearRect(0, 0, W(), H());
-
-      const scale = Math.min(W(), H()) * 0.045;
-      const offsetX = W() * 0.5;
-      const offsetY = H() * 0.55;
-
-      // Isometric grid lines (ground plane)
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.02)";
-      ctx.lineWidth = 0.5;
-      for (let i = -4; i <= 16; i++) {
-        const x1 = isoX(i, -4) * scale + offsetX;
-        const y1 = isoY(i, -4, 0) * scale + offsetY;
-        const x2 = isoX(i, 12) * scale + offsetX;
-        const y2 = isoY(i, 12, 0) * scale + offsetY;
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.stroke();
-      }
-      for (let j = -4; j <= 12; j++) {
-        const x1 = isoX(-4, j) * scale + offsetX;
-        const y1 = isoY(-4, j, 0) * scale + offsetY;
-        const x2 = isoX(16, j) * scale + offsetX;
-        const y2 = isoY(16, j, 0) * scale + offsetY;
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.stroke();
-      }
-
-      const mouseRadius = 250;
-
-      // Draw buildings
-      blocks.forEach((b) => {
-        const cx = (b.gx + b.w / 2) * scale;
-        const cy = (b.gy + b.d / 2) * scale;
-        const screenCx = isoX(b.gx + b.w / 2, b.gy + b.d / 2) * scale + offsetX;
-        const screenCy = isoY(b.gx + b.w / 2, b.gy + b.d / 2, b.h / 2) * scale + offsetY;
-        const distToMouse = Math.sqrt((screenCx - mouse.x) ** 2 + (screenCy - mouse.y) ** 2);
-        const mouseBoost = distToMouse < mouseRadius ? (1 - distToMouse / mouseRadius) : 0;
-
-        const baseAlpha = b.glow ? 0.12 : 0.06;
-        const alpha = baseAlpha + mouseBoost * 0.12;
-
-        // 8 corners of the box
-        const corners = [
-          // Bottom face
-          [b.gx, b.gy, 0],
-          [b.gx + b.w, b.gy, 0],
-          [b.gx + b.w, b.gy + b.d, 0],
-          [b.gx, b.gy + b.d, 0],
-          // Top face
-          [b.gx, b.gy, b.h],
-          [b.gx + b.w, b.gy, b.h],
-          [b.gx + b.w, b.gy + b.d, b.h],
-          [b.gx, b.gy + b.d, b.h],
-        ].map(([x, y, z]) => ({
-          sx: isoX(x, y) * scale + offsetX,
-          sy: isoY(x, y, z) * scale + offsetY,
-        }));
-
-        const c = corners;
-        const col = b.glow ? `rgba(252, 76, 0, ${alpha})` : `rgba(255, 255, 255, ${alpha})`;
-        const fillCol = b.glow ? `rgba(252, 76, 0, ${alpha * 0.3})` : `rgba(255, 255, 255, ${alpha * 0.15})`;
-
-        // Top face (filled)
-        ctx.fillStyle = b.glow
-          ? `rgba(252, 76, 0, ${(alpha * 0.4) + Math.sin(time * 2 + b.delay) * 0.02})`
-          : `rgba(255, 255, 255, ${alpha * 0.08})`;
-        ctx.beginPath();
-        ctx.moveTo(c[4].sx, c[4].sy);
-        ctx.lineTo(c[5].sx, c[5].sy);
-        ctx.lineTo(c[6].sx, c[6].sy);
-        ctx.lineTo(c[7].sx, c[7].sy);
-        ctx.closePath();
-        ctx.fill();
-
-        // Left face
-        ctx.fillStyle = b.glow
-          ? `rgba(189, 57, 0, ${alpha * 0.35})`
-          : `rgba(255, 255, 255, ${alpha * 0.04})`;
-        ctx.beginPath();
-        ctx.moveTo(c[0].sx, c[0].sy);
-        ctx.lineTo(c[4].sx, c[4].sy);
-        ctx.lineTo(c[7].sx, c[7].sy);
-        ctx.lineTo(c[3].sx, c[3].sy);
-        ctx.closePath();
-        ctx.fill();
-
-        // Right face
-        ctx.fillStyle = b.glow
-          ? `rgba(252, 76, 0, ${alpha * 0.2})`
-          : `rgba(255, 255, 255, ${alpha * 0.02})`;
-        ctx.beginPath();
-        ctx.moveTo(c[1].sx, c[1].sy);
-        ctx.lineTo(c[5].sx, c[5].sy);
-        ctx.lineTo(c[6].sx, c[6].sy);
-        ctx.lineTo(c[2].sx, c[2].sy);
-        ctx.closePath();
-        ctx.fill();
-
-        // Wireframe edges
-        ctx.strokeStyle = col;
-        ctx.lineWidth = b.glow ? 0.8 : 0.5;
-
-        // Top face outline
-        ctx.beginPath();
-        ctx.moveTo(c[4].sx, c[4].sy);
-        ctx.lineTo(c[5].sx, c[5].sy);
-        ctx.lineTo(c[6].sx, c[6].sy);
-        ctx.lineTo(c[7].sx, c[7].sy);
-        ctx.closePath();
-        ctx.stroke();
-
-        // Vertical edges
-        [[0, 4], [1, 5], [2, 6], [3, 7]].forEach(([a, b2]) => {
-          ctx.beginPath();
-          ctx.moveTo(c[a].sx, c[a].sy);
-          ctx.lineTo(c[b2].sx, c[b2].sy);
-          ctx.stroke();
-        });
-
-        // Bottom face outline
-        ctx.strokeStyle = b.glow ? `rgba(252, 76, 0, ${alpha * 0.5})` : `rgba(255, 255, 255, ${alpha * 0.5})`;
-        ctx.beginPath();
-        ctx.moveTo(c[0].sx, c[0].sy);
-        ctx.lineTo(c[1].sx, c[1].sy);
-        ctx.lineTo(c[2].sx, c[2].sy);
-        ctx.lineTo(c[3].sx, c[3].sy);
-        ctx.closePath();
-        ctx.stroke();
-
-        // Glow halo for highlighted buildings
-        if (b.glow) {
-          const pulse = Math.sin(time * 1.5 + b.delay) * 0.5 + 0.5;
-          const grad = ctx.createRadialGradient(screenCx, screenCy, 0, screenCx, screenCy, 60 + pulse * 20);
-          grad.addColorStop(0, `rgba(252, 76, 0, ${0.06 + mouseBoost * 0.08})`);
-          grad.addColorStop(1, "rgba(252, 76, 0, 0)");
-          ctx.fillStyle = grad;
-          ctx.beginPath();
-          ctx.arc(screenCx, screenCy, 60 + pulse * 20, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      });
-
-      animId = requestAnimationFrame(draw);
-    };
-
-    draw();
-
-    const handleMouse = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      mouse.x = e.clientX - rect.left;
-      mouse.y = e.clientY - rect.top;
-    };
-    const handleLeave = () => { mouse.x = -9999; mouse.y = -9999; };
-    const handleResize = () => {
-      cancelAnimationFrame(animId);
-      resize();
-      draw();
-    };
-
-    canvas.addEventListener("mousemove", handleMouse);
-    canvas.addEventListener("mouseleave", handleLeave);
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      cancelAnimationFrame(animId);
-      canvas.removeEventListener("mousemove", handleMouse);
-      canvas.removeEventListener("mouseleave", handleLeave);
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 w-full h-full pointer-events-auto"
-    />
-  );
-}
-
-/* ─── 1. HERO — with isometric city ─── */
+/* ─── 1. HERO ─── */
 function Hero() {
   return (
     <section className="relative min-h-screen flex items-center bg-black pt-20 overflow-hidden grain">
-      {/* Isometric city canvas */}
-      <IsometricCity />
 
-      {/* Warm ambient glows */}
-      <div className="absolute top-20 right-10 w-80 h-80 bg-flame/4 rounded-full blur-[120px]" />
-      <div className="absolute bottom-40 left-10 w-64 h-64 bg-amber/3 rounded-full blur-[100px]" />
-      <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-ember/3 rounded-full blur-[140px]" />
+      {/* Dot-grid base layer */}
+      <div className="absolute inset-0 dot-grid opacity-40" />
 
+      {/* Animated ambient orbs */}
+      <div className="orb-drift absolute top-16 right-[8%] w-[520px] h-[520px] bg-flame/[0.07] rounded-full blur-[140px] pointer-events-none" />
+      <div className="orb-drift-slow absolute bottom-32 left-[5%] w-[400px] h-[400px] bg-amber/[0.05] rounded-full blur-[120px] pointer-events-none" />
+      <div className="orb-drift absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-ember/[0.04] rounded-full blur-[160px] pointer-events-none" />
+
+      {/* Content */}
       <div className="max-w-7xl mx-auto px-6 py-20 fade-in relative z-10">
-        {/* Logo + brand name */}
-        <div className="flex items-center gap-6 mb-8">
-          <LogoIcon size={100} />
-          <span className="font-sora text-6xl sm:text-7xl md:text-8xl tracking-tight">
-            <span className="font-semibold gradient-text-white">petra</span>
-            <span className="font-light gradient-text">vio</span>
-          </span>
-        </div>
 
-        <h1 className="font-sora font-semibold text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight max-w-4xl gradient-text-white">
-          Vos prochains chantiers commencent ici.
-        </h1>
-        <p className="mt-6 text-lg sm:text-xl text-white/60 font-sora font-light max-w-2xl leading-relaxed">
-          Petravio identifie les décideurs dans le secteur du bâtiment, les contacte en votre nom,
-          et vous livre des rendez-vous qualifiés.
+        {/* Eyebrow label */}
+        <p className="font-sora font-semibold text-xs tracking-[0.3em] uppercase text-flame mb-6">
+          Prospection B2B · Secteur du bâtiment
         </p>
-        <div className="mt-10 flex flex-wrap gap-4">
+
+        {/* Headline */}
+        <h1 className="font-sora font-semibold text-4xl sm:text-5xl md:text-6xl lg:text-[4.25rem] leading-[1.08] tracking-tight max-w-4xl">
+          <span className="gradient-text-white">Voulez-vous plus de</span>
+          <br />
+          <span className="gradient-text">RDV qualifiés</span>
+          <span className="gradient-text-white"> pour développer</span>
+          <br />
+          <span className="gradient-text-white">votre activité&nbsp;?</span>
+        </h1>
+
+        {/* Sub-headline */}
+        <p className="mt-7 text-lg sm:text-xl text-white/55 font-sora font-light max-w-2xl leading-relaxed">
+          Petravio identifie les décideurs dans le secteur du bâtiment,
+          les contacte en votre nom, et vous livre des rendez-vous qualifiés —
+          sans recrutement, sans CRM à gérer.
+        </p>
+
+        {/* CTAs */}
+        <div className="mt-10 flex flex-wrap items-center gap-4">
           <a
-            href="#contact"
-            className="bg-flame text-white px-8 py-3.5 rounded-lg font-sora font-semibold hover:bg-flame/90 transition-all hover:shadow-lg hover:shadow-flame/25 hover:-translate-y-0.5"
+            href="mailto:contact@petravio.com?subject=Demande%20d%27audit%20gratuit"
+            className="bg-flame text-white px-9 py-4 rounded-lg font-sora font-semibold text-base hover:bg-flame/90 transition-all hover:shadow-xl hover:shadow-flame/30 hover:-translate-y-0.5"
           >
-            Prendre un RDV
+            Je veux un audit gratuit
           </a>
           <a
             href="#approche"
-            className="border border-white/20 text-white px-8 py-3.5 rounded-lg font-sora font-semibold hover:border-white/40 hover:bg-white/5 transition-all"
+            className="border border-white/20 text-white px-8 py-4 rounded-lg font-sora font-semibold text-base hover:border-white/40 hover:bg-white/5 transition-all"
           >
             Voir comment ça marche
           </a>
         </div>
 
-        <p className="mt-14 font-sora text-xs tracking-[0.3em] uppercase text-white/25">
-          Real Estate Lead Generation Agency
+        {/* Trust signals */}
+        <p className="mt-7 font-sora text-sm text-white/35 flex flex-wrap items-center gap-2">
+          <span>Audit gratuit</span>
+          <span className="text-white/20">·</span>
+          <span>Sans engagement</span>
+          <span className="text-white/20">·</span>
+          <span>Réponse sous 24h</span>
         </p>
       </div>
 
+      {/* Bottom fade to next section */}
       <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-b from-transparent to-[#111]" />
     </section>
   );
@@ -835,7 +588,7 @@ function ICP() {
                 <h3 className="font-sora font-semibold text-lg text-white">{p.title}</h3>
                 <p className="mt-2 text-white/45 text-sm leading-relaxed">{p.desc}</p>
                 {p.featured && (
-                  <a href="#contact" className="mt-4 inline-block text-flame font-sora font-semibold text-sm hover:text-amber transition-colors">
+                  <a href="mailto:contact@petravio.com?subject=Demande%20d%27audit%20gratuit" className="mt-4 inline-block text-flame font-sora font-semibold text-sm hover:text-amber transition-colors">
                     Parlons-en →
                   </a>
                 )}
@@ -924,13 +677,13 @@ function ValueProp() {
                 Prêt à remplir votre agenda ?
               </h3>
               <p className="mt-4 text-white/50 leading-relaxed text-sm">
-                Prenons 20 minutes pour voir si Petravio est fait pour vous.
+                Commencez par un audit gratuit de votre prospection actuelle. Aucun engagement.
               </p>
               <a
-                href="#contact"
+                href="mailto:contact@petravio.com?subject=Demande%20d%27audit%20gratuit"
                 className="mt-8 inline-block bg-flame text-white px-6 py-3 rounded-lg font-sora font-semibold text-center text-sm hover:bg-flame/90 transition-all hover:shadow-lg hover:shadow-flame/25"
               >
-                Réserver un appel découverte
+                Je veux un audit gratuit
               </a>
             </div>
           </div>
@@ -946,21 +699,28 @@ function Footer() {
     <footer id="contact" className="bg-black border-t border-white/5 relative grain">
       <div className="max-w-7xl mx-auto px-6 py-20 text-center fade-in relative z-10">
         <p className="text-flame font-sora font-semibold text-sm tracking-widest uppercase">
-          Contact
+          Audit gratuit
         </p>
         <h2 className="mt-4 font-sora font-semibold text-3xl sm:text-4xl gradient-text-white">
-          Vos prochains chantiers commencent ici.
+          Votre prospection mérite mieux.
         </h2>
         <p className="mt-4 text-white/50 max-w-lg mx-auto">
-          Réservez un appel découverte de 20 minutes. On vous montrera exactement comment
-          Petravio peut remplir votre pipeline.
+          Obtenez un audit gratuit de votre système de prospection actuel.
+          On identifie ensemble les opportunités manquées — sans engagement.
         </p>
         <a
-          href="mailto:contact@petravio.com"
+          href="mailto:contact@petravio.com?subject=Demande%20d%27audit%20gratuit"
           className="mt-8 inline-block bg-flame text-white px-10 py-4 rounded-lg font-sora font-semibold text-lg hover:bg-flame/90 transition-all hover:shadow-xl hover:shadow-flame/25 hover:-translate-y-0.5"
         >
-          Prendre un RDV
+          Je veux un audit gratuit
         </a>
+        <p className="mt-5 font-sora text-sm text-white/30 flex flex-wrap justify-center items-center gap-2">
+          <span>Gratuit</span>
+          <span className="text-white/15">·</span>
+          <span>Sans engagement</span>
+          <span className="text-white/15">·</span>
+          <span>Réponse sous 24h</span>
+        </p>
       </div>
 
       <div className="border-t border-white/5 relative z-10">

@@ -15,9 +15,9 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Petravio — Prospection B2B pour le bâtiment",
+  title: "Petravio — Audit gratuit de prospection B2B pour le bâtiment",
   description:
-    "Petravio identifie vos prospects dans le secteur du bâtiment, les contacte en votre nom, et vous livre des rendez-vous qualifiés.",
+    "Petravio identifie les décideurs dans le bâtiment, les contacte en votre nom, et vous livre des RDV qualifiés. Demandez votre audit gratuit.",
 };
 
 export default function RootLayout({
