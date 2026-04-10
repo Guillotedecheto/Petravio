@@ -165,8 +165,12 @@ function Nav() {
       }`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6">
-        <a href="#" className="flex items-center">
+        <a href="#" className="flex items-center gap-2.5">
           <LogoIcon size={scrolled ? 34 : 44} />
+          <span className={`font-sora transition-all duration-500 ${scrolled ? "text-base" : "text-lg"}`}>
+            <span className="font-semibold text-white">petra</span>
+            <span className="font-light text-flame">vio</span>
+          </span>
         </a>
 
         <div className="hidden md:flex items-center gap-8 text-sm text-white/70">
@@ -210,36 +214,27 @@ function Hero() {
       {/* Content */}
       <div className="w-full max-w-4xl mx-auto px-6 py-20 fade-in relative z-10 text-center">
 
-        {/* Headline */}
-        <h1 className="font-sora font-semibold text-4xl sm:text-5xl md:text-6xl lg:text-[4.25rem] leading-[1.08] tracking-tight">
-          <span className="gradient-text-white">Voulez-vous plus de</span>
-          <br />
+        {/* Headline — 2 lines */}
+        <h1 className="font-sora font-semibold text-5xl sm:text-6xl md:text-7xl leading-[1.06] tracking-tight">
+          <span className="gradient-text-white">Voulez-vous plus de </span>
           <span className="gradient-text">RDV qualifiés</span>
-          <span className="gradient-text-white"> pour développer</span>
           <br />
-          <span className="gradient-text-white">votre activité&nbsp;?</span>
+          <span className="gradient-text-white">pour développer votre activité&nbsp;?</span>
         </h1>
 
         {/* Sub-headline */}
         <p className="mt-7 text-lg sm:text-xl text-white/55 font-sora font-light leading-relaxed">
           Petravio identifie les décideurs dans le secteur du bâtiment,
-          les contacte en votre nom, et vous livre des rendez-vous qualifiés —
-          sans recrutement, sans CRM à gérer.
+          les contacte en votre nom, et vous livre des rendez-vous qualifiés.
         </p>
 
-        {/* CTAs */}
-        <div className="mt-10 flex flex-wrap justify-center items-center gap-4">
+        {/* CTA */}
+        <div className="mt-10 flex justify-center">
           <a
             href="mailto:contact@petravio.com?subject=Demande%20d%27audit%20gratuit"
-            className="bg-flame text-white px-9 py-4 rounded-lg font-sora font-semibold text-base hover:bg-flame/90 transition-all hover:shadow-xl hover:shadow-flame/30 hover:-translate-y-0.5"
+            className="relative inline-flex items-center gap-2 bg-gradient-to-r from-ember via-flame to-amber text-white px-10 py-4 rounded-lg font-sora font-semibold text-base transition-all duration-300 hover:shadow-2xl hover:shadow-flame/40 hover:-translate-y-0.5 hover:scale-[1.03] glow-border"
           >
             Je veux un audit gratuit
-          </a>
-          <a
-            href="#approche"
-            className="border border-white/20 text-white px-8 py-4 rounded-lg font-sora font-semibold text-base hover:border-white/40 hover:bg-white/5 transition-all"
-          >
-            Voir comment ça marche
           </a>
         </div>
       </div>
