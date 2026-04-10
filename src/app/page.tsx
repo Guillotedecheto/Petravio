@@ -208,15 +208,10 @@ function Hero() {
       <div className="orb-drift absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-ember/[0.04] rounded-full blur-[160px] pointer-events-none" />
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-6 py-20 fade-in relative z-10">
-
-        {/* Eyebrow label */}
-        <p className="font-sora font-semibold text-xs tracking-[0.3em] uppercase text-flame mb-6">
-          Prospection B2B · Secteur du bâtiment
-        </p>
+      <div className="w-full max-w-4xl mx-auto px-6 py-20 fade-in relative z-10 text-center">
 
         {/* Headline */}
-        <h1 className="font-sora font-semibold text-4xl sm:text-5xl md:text-6xl lg:text-[4.25rem] leading-[1.08] tracking-tight max-w-4xl">
+        <h1 className="font-sora font-semibold text-4xl sm:text-5xl md:text-6xl lg:text-[4.25rem] leading-[1.08] tracking-tight">
           <span className="gradient-text-white">Voulez-vous plus de</span>
           <br />
           <span className="gradient-text">RDV qualifiés</span>
@@ -226,14 +221,14 @@ function Hero() {
         </h1>
 
         {/* Sub-headline */}
-        <p className="mt-7 text-lg sm:text-xl text-white/55 font-sora font-light max-w-2xl leading-relaxed">
+        <p className="mt-7 text-lg sm:text-xl text-white/55 font-sora font-light leading-relaxed">
           Petravio identifie les décideurs dans le secteur du bâtiment,
           les contacte en votre nom, et vous livre des rendez-vous qualifiés —
           sans recrutement, sans CRM à gérer.
         </p>
 
         {/* CTAs */}
-        <div className="mt-10 flex flex-wrap items-center gap-4">
+        <div className="mt-10 flex flex-wrap justify-center items-center gap-4">
           <a
             href="mailto:contact@petravio.com?subject=Demande%20d%27audit%20gratuit"
             className="bg-flame text-white px-9 py-4 rounded-lg font-sora font-semibold text-base hover:bg-flame/90 transition-all hover:shadow-xl hover:shadow-flame/30 hover:-translate-y-0.5"
@@ -247,15 +242,6 @@ function Hero() {
             Voir comment ça marche
           </a>
         </div>
-
-        {/* Trust signals */}
-        <p className="mt-7 font-sora text-sm text-white/35 flex flex-wrap items-center gap-2">
-          <span>Audit gratuit</span>
-          <span className="text-white/20">·</span>
-          <span>Sans engagement</span>
-          <span className="text-white/20">·</span>
-          <span>Réponse sous 24h</span>
-        </p>
       </div>
 
       {/* Bottom fade to next section */}
