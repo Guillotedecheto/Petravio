@@ -212,10 +212,10 @@ function Hero() {
       <div className="orb-drift absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-ember/[0.04] rounded-full blur-[160px] pointer-events-none" />
 
       {/* Content */}
-      <div className="w-full max-w-4xl mx-auto px-6 py-20 fade-in relative z-10 text-center">
+      <div className="w-full max-w-5xl mx-auto px-6 py-20 fade-in relative z-10 text-center">
 
         {/* Headline — 2 lines */}
-        <h1 className="font-sora font-semibold text-5xl sm:text-6xl md:text-7xl leading-[1.06] tracking-tight">
+        <h1 className="font-sora font-semibold text-[clamp(1.5rem,4.5vw,3rem)] leading-[1.12] tracking-tight">
           <span className="gradient-text-white">Voulez-vous plus de </span>
           <span className="gradient-text">RDV qualifiés</span>
           <br />
