@@ -216,16 +216,18 @@ function Hero() {
 
         {/* Headline — 2 lines */}
         <h1 className="font-sora font-semibold text-[clamp(1.5rem,4.5vw,3rem)] leading-[1.12] tracking-tight">
-          <span className="gradient-text-white">Voulez-vous plus de </span>
-          <span className="gradient-text">RDV qualifiés</span>
+          <span className="gradient-text-white">Combien de chantiers avez-vous laissé</span>
           <br />
-          <span className="gradient-text-white">pour développer votre activité&nbsp;?</span>
+          <span className="gradient-text-white">à vos concurrents cette année&nbsp;?</span>
         </h1>
 
         {/* Sub-headline */}
-        <p className="mt-7 text-lg sm:text-xl text-white/55 font-sora font-light leading-relaxed">
-          Petravio identifie les décideurs dans le secteur du bâtiment,
-          les contacte en votre nom, et vous livre des rendez-vous qualifiés.
+        <p className="mt-6 text-base sm:text-lg text-white font-sora font-semibold leading-snug fade-in">
+          Avec Petravio, vos prochains chantiers commencent ici.
+        </p>
+        <p className="mt-3 text-base sm:text-lg text-white/55 font-sora font-light leading-relaxed fade-in">
+          Petravio audite gratuitement votre système de prospection inbound et outbound,
+          et met en place pour vous des solutions sur mesure pour signer plus de contrats.
         </p>
 
         {/* CTA */}
