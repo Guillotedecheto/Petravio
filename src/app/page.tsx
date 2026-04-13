@@ -268,8 +268,8 @@ function SocialProof() {
 function Problem() {
   const cards = [
     {
-      title: "Pas de processus sortant",
-      desc: "Vous comptez sur le bouche-à-oreille et les appels entrants.",
+      title: "Chantier en cours, prospection à l'arrêt",
+      desc: "Quand vous êtes sur le terrain, vous ne cherchez pas de clients. Quand vous êtes libre, il est souvent trop tard.",
       icon: (
         <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#FC4C00" strokeWidth="1.5">
           <circle cx="16" cy="16" r="12" />
@@ -278,8 +278,8 @@ function Problem() {
       ),
     },
     {
-      title: "Pipeline imprévisible",
-      desc: "Vous ne savez jamais d'où viendra le prochain chantier.",
+      title: "Dépendance au bouche-à-oreille",
+      desc: "Les recommandations arrivent sans prévenir. Vous ne contrôlez ni le rythme, ni la qualité des opportunités.",
       icon: (
         <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#FC4C00" strokeWidth="1.5">
           <path d="M4 24l6-8 5 4 6-10 7 6" />
@@ -288,8 +288,8 @@ function Problem() {
       ),
     },
     {
-      title: "Pas le temps",
-      desc: "La prospection prend du temps que vous n'avez pas.",
+      title: "Aucun process structuré",
+      desc: "Ni présence inbound, ni démarche outbound. Votre pipeline repose sur la chance, pas sur un système.",
       icon: (
         <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#FC4C00" strokeWidth="1.5">
           <rect x="4" y="6" width="24" height="20" rx="3" />
@@ -307,8 +307,8 @@ function Problem() {
           Le problème
         </p>
         <h2 className="mt-4 font-sora font-semibold text-3xl sm:text-4xl md:text-5xl text-white leading-tight max-w-3xl fade-in">
-          Vous êtes bons dans votre métier.{" "}
-          <span className="gradient-text">La prospection, c&apos;est une autre histoire.</span>
+          Votre carnet de commandes ne devrait pas dépendre du hasard.{" "}
+          <span className="gradient-text">C&apos;est pourtant souvent le cas.</span>
         </h2>
         <div className="mt-14 grid md:grid-cols-3 gap-6">
           {cards.map((card, i) => (
