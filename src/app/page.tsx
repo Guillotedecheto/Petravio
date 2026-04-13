@@ -368,7 +368,7 @@ function Solution() {
         </p>
         <h2 className="mt-4 font-sora font-semibold text-3xl sm:text-4xl md:text-5xl text-white leading-tight max-w-3xl fade-in">
           On remplit votre agenda.{" "}
-          <span className="gradient-text">Vous fermez les contrats.</span>
+          <span className="gradient-text">Vous signez les contrats.</span>
         </h2>
 
         <div className="mt-16 relative">
