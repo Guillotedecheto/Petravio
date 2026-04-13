@@ -308,7 +308,7 @@ function Problem() {
         </p>
         <h2 className="mt-4 font-sora font-semibold text-3xl sm:text-4xl md:text-5xl text-white leading-tight max-w-3xl fade-in">
           Vous êtes bons dans votre métier.{" "}
-          <span className="gradient-text">Pas dans la prospection.</span>
+          <span className="gradient-text">La prospection, c'est une autre histoire.</span>
         </h2>
         <div className="mt-14 grid md:grid-cols-3 gap-6">
           {cards.map((card, i) => (
