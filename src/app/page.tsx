@@ -339,14 +339,14 @@ function Solution() {
     {
       icon: <TargetIcon />,
       num: "01",
-      title: "On identifie",
-      desc: "Données sectorielles, signaux permis et appels d'offres. On cible les décideurs au bon moment.",
+      title: "On audite & identifie",
+      desc: "Nous analysons votre système de prospection existant — inbound comme outbound — et identifions les points de friction qui vous font perdre des opportunités.",
     },
     {
       icon: <SendIcon />,
       num: "02",
-      title: "On contacte",
-      desc: "Séquences email personnalisées, 9 touches sur 30 jours. Votre nom, votre voix.",
+      title: "On met en place",
+      desc: "Nous déployons des solutions sur mesure alimentées par l'IA : agents d'appel automatisés, campagnes email personnalisées, ciblage de prospects qualifiés dans le bâtiment, entre autres.",
     },
     {
       icon: <CalendarIcon />,
