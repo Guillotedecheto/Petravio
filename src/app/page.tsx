@@ -222,8 +222,8 @@ function Hero() {
         </h1>
 
         {/* Sub-headline */}
-        <p className="mt-6 text-base sm:text-lg text-white font-sora font-semibold leading-snug fade-in">
-          Avec Petravio, vos prochains chantiers commencent ici.
+        <p className="mt-6 text-base sm:text-lg font-sora font-semibold leading-snug fade-in">
+          <span className="gradient-text">Avec Petravio, vos prochains chantiers commencent ici.</span>
         </p>
         <p className="mt-3 text-base sm:text-lg text-white/55 font-sora font-light leading-relaxed fade-in">
           Petravio audite gratuitement votre système de prospection inbound et outbound,
