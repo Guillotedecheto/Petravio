@@ -70,8 +70,8 @@ function useCounter(end: number, duration: number = 1500, suffix: string = "") {
 /* ─── SVG Icons ─── */
 const LogoIcon = ({ size = 36 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
-    <polygon points="35,10 5,85 65,85" fill="#AB4F16" />
-    <polygon points="62,40 45,85 80,85" fill="#AB4F16" opacity="0.75" />
+    <polygon points="38,8 3,90 73,90" fill="#AB4F16" />
+    <polygon points="72,42 54,90 95,90" fill="#FF914D" opacity="0.85" />
   </svg>
 );
 
@@ -165,11 +165,10 @@ function Nav() {
       }`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6">
-        <a href="#" className="flex items-center gap-2.5">
-          <LogoIcon size={scrolled ? 34 : 44} />
-          <span className={`font-sora transition-all duration-500 ${scrolled ? "text-base" : "text-lg"}`}>
-            <span className="font-semibold text-white">petra</span>
-            <span className="font-light text-flame">vio</span>
+        <a href="#" className="flex items-center gap-3">
+          <LogoIcon size={scrolled ? 40 : 52} />
+          <span className={`font-sora font-semibold tracking-wide transition-all duration-500 ${scrolled ? "text-base" : "text-lg"} text-white`}>
+            PETRAVIO
           </span>
         </a>
 
