@@ -87,7 +87,7 @@ html {
 
 /* ─── Step connecting line gradient ─── */
 .step-line {
-  background: linear-gradient(90deg, #AB8F28, #FFB870);
+  background: linear-gradient(90deg, #AB4F16, #FFB870);
   height: 2px;
 }
 

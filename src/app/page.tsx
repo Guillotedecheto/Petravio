@@ -70,7 +70,7 @@ function useCounter(end: number, duration: number = 1500, suffix: string = "") {
 /* ─── SVG Icons ─── */
 const LogoIcon = ({ size = 36 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
-    <polygon points="35,10 5,85 65,85" fill="#AB8F28" />
+    <polygon points="35,10 5,85 65,85" fill="#AB4F16" />
     <polygon points="62,40 45,85 80,85" fill="#FF914D" opacity="0.75" />
   </svg>
 );
@@ -418,7 +418,7 @@ function CostComparison() {
     {
       title: "Agence généraliste",
       cost: "300–600€",
-      costColor: "#AB8F28",
+      costColor: "#AB4F16",
       subtitle: "par RDV — sans garantie secteur",
       items: ["Templates génériques", "Pas de connaissance bâtiment", "No-show fréquents", "Engagement long terme imposé"],
       featured: false,
