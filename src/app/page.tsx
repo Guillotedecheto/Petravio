@@ -70,57 +70,57 @@ function useCounter(end: number, duration: number = 1500, suffix: string = "") {
 /* ─── SVG Icons ─── */
 const LogoIcon = ({ size = 36 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
-    <polygon points="35,10 5,85 65,85" fill="#BD3900" />
-    <polygon points="62,40 45,85 80,85" fill="#FFA51F" opacity="0.75" />
+    <polygon points="35,10 5,85 65,85" fill="#AB8F28" />
+    <polygon points="62,40 45,85 80,85" fill="#FF914D" opacity="0.75" />
   </svg>
 );
 
 const TargetIcon = () => (
-  <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#FC4C00" strokeWidth="2">
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#FF914D" strokeWidth="2">
     <circle cx="20" cy="20" r="16" />
     <circle cx="20" cy="20" r="10" />
-    <circle cx="20" cy="20" r="4" fill="#FC4C00" stroke="none" />
+    <circle cx="20" cy="20" r="4" fill="#FF914D" stroke="none" />
   </svg>
 );
 
 const SendIcon = () => (
-  <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#FC4C00" strokeWidth="2">
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#FF914D" strokeWidth="2">
     <path d="M6 20l28-12-12 28-4-12-12-4z" />
     <path d="M18 22l6-6" />
   </svg>
 );
 
 const CalendarIcon = () => (
-  <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#FC4C00" strokeWidth="2">
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#FF914D" strokeWidth="2">
     <rect x="6" y="10" width="28" height="24" rx="3" />
     <path d="M6 18h28M14 6v8M26 6v8" />
-    <rect x="14" y="22" width="4" height="4" rx="1" fill="#FC4C00" stroke="none" />
+    <rect x="14" y="22" width="4" height="4" rx="1" fill="#FF914D" stroke="none" />
   </svg>
 );
 
 const CubeIcon = () => (
-  <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FC4C00" strokeWidth="1.5">
+  <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FF914D" strokeWidth="1.5">
     <path d="M18 4L4 12v12l14 8 14-8V12L18 4z" />
     <path d="M4 12l14 8 14-8M18 20v12" />
   </svg>
 );
 
 const ArrowsIcon = () => (
-  <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FC4C00" strokeWidth="1.5">
+  <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FF914D" strokeWidth="1.5">
     <path d="M8 18h20M22 12l6 6-6 6" />
     <path d="M28 26H8M14 32l-6-6 6-6" />
   </svg>
 );
 
 const WrenchIcon = () => (
-  <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FC4C00" strokeWidth="1.5">
+  <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FF914D" strokeWidth="1.5">
     <path d="M22 8a8 8 0 01-6.5 12.5L8 28l-2-2 7.5-7.5A8 8 0 0122 8z" />
     <circle cx="22" cy="14" r="3" />
   </svg>
 );
 
 const LeafIcon = () => (
-  <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FC4C00" strokeWidth="1.5">
+  <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FF914D" strokeWidth="1.5">
     <path d="M8 30C8 30 8 16 18 8c10 8 10 22 10 22" />
     <path d="M18 30V16" />
     <path d="M18 20c-3-2-6-2-6-2" />
@@ -129,7 +129,7 @@ const LeafIcon = () => (
 );
 
 const CraneIcon = () => (
-  <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FC4C00" strokeWidth="1.5">
+  <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FF914D" strokeWidth="1.5">
     <line x1="12" y1="6" x2="12" y2="32" />
     <line x1="6" y1="10" x2="30" y2="10" />
     <line x1="12" y1="10" x2="8" y2="18" />
@@ -140,7 +140,7 @@ const CraneIcon = () => (
 );
 
 const PlusIcon = () => (
-  <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FC4C00" strokeWidth="1.5">
+  <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#FF914D" strokeWidth="1.5">
     <circle cx="18" cy="18" r="14" />
     <path d="M18 10v16M10 18h16" />
   </svg>
@@ -273,7 +273,7 @@ function Problem() {
       title: "Chantier en cours, prospection à l'arrêt",
       desc: "Quand vous êtes sur le terrain, vous ne cherchez pas de clients. Quand vous êtes libre, il est souvent trop tard.",
       icon: (
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#FC4C00" strokeWidth="1.5">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#FF914D" strokeWidth="1.5">
           <circle cx="16" cy="16" r="12" />
           <path d="M16 10v6l4 3" />
         </svg>
@@ -283,7 +283,7 @@ function Problem() {
       title: "Dépendance au bouche-à-oreille",
       desc: "Les recommandations arrivent sans prévenir. Vous ne contrôlez ni le rythme, ni la qualité des opportunités.",
       icon: (
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#FC4C00" strokeWidth="1.5">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#FF914D" strokeWidth="1.5">
           <path d="M4 24l6-8 5 4 6-10 7 6" />
           <path d="M4 28h24" />
         </svg>
@@ -293,7 +293,7 @@ function Problem() {
       title: "Aucun process structuré",
       desc: "Ni présence inbound, ni démarche outbound. Votre pipeline repose sur la chance, pas sur un système.",
       icon: (
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#FC4C00" strokeWidth="1.5">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#FF914D" strokeWidth="1.5">
           <rect x="4" y="6" width="24" height="20" rx="3" />
           <path d="M4 12h24" />
           <path d="M10 18h4M18 18h4" />
@@ -418,7 +418,7 @@ function CostComparison() {
     {
       title: "Agence généraliste",
       cost: "300–600€",
-      costColor: "#BD3900",
+      costColor: "#AB8F28",
       subtitle: "par RDV — sans garantie secteur",
       items: ["Templates génériques", "Pas de connaissance bâtiment", "No-show fréquents", "Engagement long terme imposé"],
       featured: false,
@@ -426,7 +426,7 @@ function CostComparison() {
     {
       title: "Petravio",
       cost: "3–7×",
-      costColor: "#FC4C00",
+      costColor: "#FF914D",
       subtitle: "moins cher en moyenne",
       items: ["Spécialisé bâtiment & construction", "Zéro charge sociale", "Opérationnel en 7 jours", "Sans recrutement"],
       featured: true,
@@ -622,7 +622,7 @@ function ValueProp() {
                   <li key={i} className="flex items-start gap-3">
                     <span className="mt-0.5 w-5 h-5 rounded-full bg-flame/10 flex items-center justify-center flex-shrink-0">
                       <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                        <path d="M2 6l3 3 5-5" stroke="#FC4C00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M2 6l3 3 5-5" stroke="#FF914D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     </span>
                     <span className="text-white/70">{item}</span>
