@@ -10,8 +10,8 @@ const config: Config = {
     extend: {
       colors: {
         black: "#000000",
-        ember: "#AB4F16",
-        flame: "#FF914D",
+        ember: "#FF914D",
+        flame: "#AB4F16",
         amber: "#FFB870",
         white: "#FFF9F6",
         dark: "#0A0A0A",
