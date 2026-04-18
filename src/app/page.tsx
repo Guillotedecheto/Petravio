@@ -367,8 +367,9 @@ function Solution() {
         <p className="text-amber font-sora font-semibold text-sm tracking-widest uppercase fade-in">
           Comment ça marche
         </p>
-        <h2 className="mt-4 font-sora font-semibold text-3xl sm:text-4xl md:text-5xl text-white leading-tight max-w-3xl fade-in">
-          On remplit votre agenda.{" "}
+        <h2 className="mt-4 font-sora font-semibold text-3xl sm:text-4xl md:text-5xl text-white leading-tight fade-in">
+          On remplit votre agenda.
+          <br />
           <span className="gradient-text">Vous signez les contrats.</span>
         </h2>
 
