@@ -187,7 +187,7 @@ function Nav() {
           </a>
           <a
             href="mailto:contact@petravio.com?subject=Demande%20d%27audit%20gratuit"
-            className="bg-flame text-white px-5 py-2 rounded-lg font-sora font-semibold text-sm hover:bg-flame/90 transition-all hover:shadow-lg hover:shadow-flame/20"
+            className="bg-gradient-to-r from-flame via-ember to-amber text-white px-5 py-2 rounded-lg font-sora font-semibold text-sm transition-all hover:shadow-lg hover:shadow-flame/30 hover:brightness-110"
           >
             Audit gratuit
           </a>
