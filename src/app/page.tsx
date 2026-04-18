@@ -168,7 +168,7 @@ function Nav() {
         <a href="#" className="flex items-center gap-3">
           <LogoIcon size={scrolled ? 40 : 52} />
           <span className={`font-jakarta font-semibold tracking-wide transition-all duration-500 ${scrolled ? "text-base" : "text-lg"} text-white`}>
-            PETR<span className="text-flame">AVIO</span>
+            Petra<span className="gradient-text">vio</span>
           </span>
         </a>
 
