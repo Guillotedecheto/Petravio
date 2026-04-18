@@ -215,9 +215,9 @@ function Hero() {
 
         {/* Headline — 2 lines */}
         <h1 className="font-sora font-semibold text-[clamp(1.5rem,4.5vw,3rem)] leading-[1.12] tracking-tight">
-          <span className="gradient-text-white">Combien de chantiers avez-vous laissé</span>
+          <span className="text-white">Combien de chantiers avez-vous laissé</span>
           <br />
-          <span className="gradient-text-white">à vos concurrents cette année&nbsp;?</span>
+          <span className="text-white">à vos concurrents cette année&nbsp;?</span>
         </h1>
 
         {/* Sub-headline */}
