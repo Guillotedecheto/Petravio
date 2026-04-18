@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Sora, DM_Sans } from "next/font/google";
+import { Sora, DM_Sans, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
 const sora = Sora({
@@ -12,6 +12,12 @@ const dmSans = DM_Sans({
   subsets: ["latin"],
   variable: "--font-dm",
   weight: ["400", "500"],
+});
+
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-jakarta",
+  weight: ["600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -27,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className="scroll-smooth">
-      <body className={`${sora.variable} ${dmSans.variable} font-dm antialiased`}>
+      <body className={`${sora.variable} ${dmSans.variable} ${plusJakarta.variable} font-dm antialiased`}>
         {children}
       </body>
     </html>

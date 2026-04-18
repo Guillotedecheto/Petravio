@@ -20,6 +20,7 @@ const config: Config = {
       fontFamily: {
         sora: ["Sora", "sans-serif"],
         dm: ["DM Sans", "sans-serif"],
+        jakarta: ["Plus Jakarta Sans", "sans-serif"],
       },
     },
   },

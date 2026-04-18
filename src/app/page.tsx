@@ -167,8 +167,8 @@ function Nav() {
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6">
         <a href="#" className="flex items-center gap-3">
           <LogoIcon size={scrolled ? 40 : 52} />
-          <span className={`font-sora font-semibold tracking-wide transition-all duration-500 ${scrolled ? "text-base" : "text-lg"} text-white`}>
-            PETRAVIO
+          <span className={`font-jakarta font-semibold tracking-wide transition-all duration-500 ${scrolled ? "text-base" : "text-lg"} text-white`}>
+            PETR<span className="text-flame">AVIO</span>
           </span>
         </a>
 
