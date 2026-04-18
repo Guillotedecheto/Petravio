@@ -663,7 +663,7 @@ function ValueProp() {
               </p>
               <a
                 href="mailto:contact@petravio.com?subject=Demande%20d%27audit%20gratuit"
-                className="mt-8 relative inline-flex items-center gap-2 bg-gradient-to-r from-flame via-ember to-amber text-white px-6 py-3 rounded-lg font-sora font-semibold text-sm transition-all duration-300 hover:shadow-2xl hover:shadow-flame/40 hover:-translate-y-0.5 hover:scale-[1.03] glow-border"
+                className="mt-8 inline-block bg-flame text-white px-6 py-3 rounded-lg font-sora font-semibold text-center text-sm hover:bg-flame/90 transition-all hover:shadow-lg hover:shadow-flame/25"
               >
                 Je veux un audit gratuit
               </a>
@@ -692,7 +692,7 @@ function Footer() {
         </p>
         <a
           href="mailto:contact@petravio.com?subject=Demande%20d%27audit%20gratuit"
-          className="mt-8 inline-block bg-flame text-white px-10 py-4 rounded-lg font-sora font-semibold text-lg hover:bg-flame/90 transition-all hover:shadow-xl hover:shadow-flame/25 hover:-translate-y-0.5"
+          className="mt-8 relative inline-flex items-center gap-2 bg-gradient-to-r from-flame via-ember to-amber text-white px-10 py-4 rounded-lg font-sora font-semibold text-lg transition-all duration-300 hover:shadow-2xl hover:shadow-flame/40 hover:-translate-y-0.5 hover:scale-[1.03] glow-border"
         >
           Je veux un audit gratuit
         </a>
