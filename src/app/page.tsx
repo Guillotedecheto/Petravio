@@ -605,7 +605,7 @@ function ValueProp() {
         <p className="text-flame font-sora font-semibold text-sm tracking-widest uppercase fade-in">
           Ce qu&apos;on livre
         </p>
-        <h2 className="mt-4 font-sora font-semibold text-3xl sm:text-4xl md:text-5xl text-white leading-tight max-w-3xl fade-in">
+        <h2 className="mt-4 font-sora font-semibold text-3xl sm:text-4xl md:text-5xl text-white leading-tight fade-in">
           Votre solution sur mesure.
           <br />
           <span className="gradient-text">Des rendez-vous dans votre agenda.</span>
